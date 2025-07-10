@@ -68,8 +68,8 @@
         <div class="lg:col-span-1">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="text-center">
-                    <div class="inline-flex items-center justify-center w-24 h-24 bg-orange-100 rounded-full mb-4">
-                        <i class="fas fa-user text-4xl text-orange-600"></i>
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-primary-100 rounded-full mb-4">
+                        <i class="fas fa-user text-4xl text-primary-600"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900">{user.name}</h3>
                     <p class="text-sm text-gray-500 mt-1">{user.email}</p>

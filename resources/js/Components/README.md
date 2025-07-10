@@ -9,17 +9,21 @@ Components/
 ├── Dashboard/          # Komponen khusus dashboard
 │   ├── DataTable/     # Komponen tabel dengan sorting & pagination
 │   ├── PageHeader.svelte
-│   ├── Sidebar.svelte
-│   └── StatCard.svelte
+│   └── Sidebar.svelte
 ├── Layouts/           # Layout halaman
 │   ├── AuthLayout.svelte
 │   ├── DashboardLayout.svelte
 │   └── GuestLayout.svelte
 ├── Shared/            # Komponen yang digunakan di seluruh aplikasi
 │   └── Logo.svelte
-└── UI/                # Komponen UI reusable
-    ├── Form/          # Komponen form
-    └── ...            # Komponen UI lainnya
+├── UI/                # Komponen UI reusable
+│   ├── Form/          # Komponen form
+│   └── ...            # Komponen UI lainnya
+└── Unused/            # Komponen yang tidak terpakai (untuk referensi)
+    ├── StatCard.svelte
+    ├── EmptyState.svelte
+    ├── Input.svelte
+    └── README.md
 ```
 
 ## 🎨 UI Components
@@ -134,35 +138,83 @@ Menampilkan avatar user dengan gambar atau inisial otomatis.
 | `image` | `string` | `null` | URL gambar avatar |
 | `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Ukuran avatar |
 
-### EmptyState
-Komponen untuk menampilkan state kosong dengan action optional.
+
+### Modal
+Modal umum yang sangat fleksibel untuk berbagai kebutuhan.
 
 ```svelte
-<EmptyState 
-  icon="fas fa-users"
-  title="Belum ada user"
-  description="Mulai dengan menambahkan user pertama"
-  actionText="Tambah User"
-  actionIcon="fas fa-plus"
-  onAction={() => router.visit('/admin/users/create')}
-/>
+<script>
+let showModal = false;
+let showFullModal = false;
+</script>
 
-<!-- Simple empty state -->
-<EmptyState 
-  title="Data tidak ditemukan"
-  description="Coba ubah filter pencarian Anda"
-/>
+<!-- Basic Modal -->
+<Modal 
+  show={showModal}
+  title="Edit Profile"
+  size="md"
+  on:close={() => showModal = false}
+>
+  <form class="space-y-4">
+    <Input label="Name" bind:value={name} />
+    <Input label="Email" bind:value={email} />
+  </form>
+  
+  <div slot="footer">
+    <Button variant="primary" on:click={handleSave}>Save</Button>
+    <Button variant="secondary" on:click={() => showModal = false}>Cancel</Button>
+  </div>
+</Modal>
+
+<!-- Large Scrollable Modal -->
+<Modal 
+  show={showFullModal}
+  title="Terms & Conditions"
+  size="xl"
+  scrollable={true}
+  closeOnClickOutside={false}
+  on:close={() => showFullModal = false}
+>
+  <div class="prose max-w-none">
+    <!-- Long content here -->
+  </div>
+</Modal>
+
+<!-- Modal without Header/Footer -->
+<Modal 
+  show={imageModal}
+  showHeader={false}
+  showFooter={false}
+  size="lg"
+  centered={true}
+  on:close={() => imageModal = false}
+>
+  <img src="/path/to/image.jpg" class="w-full h-auto" />
+</Modal>
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `icon` | `string` | `'fas fa-inbox'` | Font Awesome icon |
-| `title` | `string` | `'No data found'` | Judul empty state |
-| `description` | `string` | `''` | Deskripsi tambahan |
-| `actionText` | `string` | `''` | Text untuk button action |
-| `actionIcon` | `string` | `''` | Icon untuk button action |
-| `onAction` | `function` | `() => {}` | Handler untuk action click |
+| `show` | `boolean` | `false` | Show/hide modal |
+| `title` | `string` | `''` | Modal title |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Modal size |
+| `closeOnEscape` | `boolean` | `true` | Close on ESC key |
+| `closeOnClickOutside` | `boolean` | `true` | Close on backdrop click |
+| `showClose` | `boolean` | `true` | Show close button |
+| `showFooter` | `boolean` | `true` | Show footer slot |
+| `showHeader` | `boolean` | `true` | Show header |
+| `centered` | `boolean` | `false` | Center modal vertically |
+| `scrollable` | `boolean` | `false` | Make body scrollable |
+| `className` | `string` | `''` | Additional CSS classes |
+
+**Events:**
+- `close` - Fired when modal requests to close
+
+**Slots:**
+- `default` - Modal body content
+- `header` - Additional header content (after title)
+- `footer` - Footer content (buttons, etc)
 
 ### ConfirmModal
 Modal konfirmasi untuk aksi berbahaya/penting.
@@ -288,29 +340,6 @@ alert.info('Perubahan akan diterapkan setelah refresh');
 
 ## 📝 Form Components
 
-### Input
-Input text standar dengan label dan error handling.
-
-```svelte
-<Input 
-  label="Nama Lengkap"
-  name="name"
-  bind:value={$form.name}
-  error={$form.errors.name}
-  placeholder="Masukkan nama lengkap"
-  required
-/>
-```
-
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | `''` | Label input |
-| `name` | `string` | `''` | Name attribute |
-| `value` | `string` | `''` | Input value (bind) |
-| `error` | `string` | `''` | Error message |
-| `required` | `boolean` | `false` | Required field |
-| `placeholder` | `string` | `''` | Placeholder text |
 
 ### IconInput
 Input dengan icon di sebelah kiri.
@@ -607,46 +636,6 @@ function handleAction(action, user) {
 - `number` - Format number
 - `index` - Row number
 
-### StatCard
-Kartu statistik untuk dashboard metrics.
-
-```svelte
-<!-- Simple stat -->
-<StatCard 
-  title="Total Users"
-  value="1,234"
-  icon="fas fa-users"
-  color="primary"
-/>
-
-<!-- With trend -->
-<StatCard 
-  title="Revenue"
-  value="Rp 45.2M"
-  icon="fas fa-dollar-sign"
-  color="success"
-  trend="+12.5%"
-  trendType="up"
-/>
-
-<!-- Grid layout -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  <StatCard title="Users" value={stats.users} icon="fas fa-users" color="primary" />
-  <StatCard title="Orders" value={stats.orders} icon="fas fa-shopping-cart" color="info" />
-  <StatCard title="Revenue" value={stats.revenue} icon="fas fa-dollar-sign" color="success" />
-  <StatCard title="Growth" value={stats.growth} icon="fas fa-chart-line" color="warning" trend="+8%" trendType="up" />
-</div>
-```
-
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | required | Stat title |
-| `value` | `string\|number` | required | Stat value |
-| `icon` | `string` | required | Font Awesome icon |
-| `color` | `string` | `'primary'` | Color theme |
-| `trend` | `string` | `''` | Trend percentage |
-| `trendType` | `'up' \| 'down'` | `'up'` | Trend direction |
 
 ### Sidebar
 Sidebar navigasi dashboard dengan support untuk nested menu.

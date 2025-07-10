@@ -119,12 +119,6 @@
                     
                     <!-- Right side items -->
                     <div class="flex items-center space-x-4">
-                        <!-- Notifications -->
-                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                            <i class="fas fa-bell text-lg"></i>
-                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                        </button>
-                        
                         <!-- User menu -->
                         <div class="relative">
                             <button 

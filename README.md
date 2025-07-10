@@ -497,7 +497,7 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 ## 👨‍💻 Author
 
-Created with ❤️ by [Your Name](https://github.com/RobithYusuf
+Created with ❤️ by [Your Name](https://github.com/RobithYusuf)
 
 ---
 

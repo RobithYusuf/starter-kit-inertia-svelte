@@ -15,7 +15,7 @@
     export let loadingData = false;
     export let currentSortField = '';
     export let currentSortOrder = '';
-    export let actionLabels = { edit: 'Edit', delete: 'Delete' };
+    export let actionLabels = { edit: 'Edit', delete: 'Delete', view: 'View' };
     export let perPage = 10;
     export let perPageOptions = [10, 25, 50, 100];
     
@@ -39,6 +39,10 @@
     
     function handleDelete(id) {
         dispatch('delete', id);
+    }
+    
+    function handleView(id) {
+        dispatch('view', id);
     }
     
     function handlePageChange(page) {
@@ -113,9 +117,11 @@
                                             itemId={row.id}
                                             editRoute={editRoute}
                                             {actionLabels}
-                                            canEdit={column.actions?.edit}
-                                            canDelete={column.actions?.delete}
+                                            canEdit={column.actions?.edit !== false}
+                                            canDelete={column.actions?.delete !== false}
+                                            canView={column.actions?.view === true}
                                             on:delete={() => handleDelete(row.id)}
+                                            on:view={() => handleView(row.id)}
                                         />
                                     {:else}
                                         <TableCell 

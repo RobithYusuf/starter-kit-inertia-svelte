@@ -6,6 +6,7 @@
     import DataTable from '@/Components/Dashboard/DataTable/DataTable.svelte';
     import Button from '@/Components/UI/Button.svelte';
     import ConfirmModal from '@/Components/UI/ConfirmModal.svelte';
+    import Modal from '@/Components/UI/Modal.svelte';
     import IconInput from '@/Components/UI/Form/IconInput.svelte';
     import Dropdown from '@/Components/UI/Form/Dropdown.svelte';
     import UserAvatar from '@/Components/UI/UserAvatar.svelte';
@@ -28,6 +29,10 @@
     let isLoading = false;
     let debounceTimeout;
     let initialLoadComplete = false;
+    
+    // Modal states
+    let showUserModal = false;
+    let selectedUser = null;
     
     // Track previous values
     let prevSearch = '';
@@ -127,6 +132,7 @@
             priority: 1,
             type: 'actions',
             actions: {
+                view: true,
                 edit: true,
                 delete: true
             }
@@ -222,6 +228,14 @@
         }
     }
     
+    function handleViewUser(event) {
+        const userId = event.detail;
+        selectedUser = indexedUsers.find(user => user.id === userId);
+        if (selectedUser) {
+            showUserModal = true;
+        }
+    }
+    
     onMount(() => {
         // Set initial values without triggering reactivity
         prevSearch = filters.search || '';
@@ -290,9 +304,10 @@
             perPage={$searchForm.per_page}
             on:sort={handleSort}
             on:delete={confirmDeleteUser}
+            on:view={handleViewUser}
             on:page={goToPage}
             on:perPageChange={handlePerPageChange}
-            actionLabels={{ edit: 'Edit User', delete: 'Delete User' }}
+            actionLabels={{ edit: 'Edit User', delete: 'Delete User', view: 'View User Details' }}
         />
     </Card>
     
@@ -308,6 +323,111 @@
         on:confirm={doDelete}
         on:cancel={() => (confirmDelete = false)}
     />
+    
+    <!-- User Details Modal -->
+    <Modal
+        show={showUserModal}
+        title="User Details"
+        size="lg"
+        on:close={() => (showUserModal = false)}
+    >
+        {#if selectedUser}
+            <div class="space-y-6">
+                <!-- User Header -->
+                <div class="flex items-center space-x-4 pb-6 border-b border-gray-200">
+                    <UserAvatar name={selectedUser.name} image={selectedUser.avatar} size="xl" />
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">{selectedUser.name}</h3>
+                        <p class="text-sm text-gray-500">{selectedUser.email}</p>
+                    </div>
+                </div>
+                
+                <!-- User Information Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-1">Role</h4>
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {selectedUser.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                                {selectedUser.role}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-1">Status</h4>
+                        <div class="flex items-center space-x-2">
+                            <span class="flex items-center text-sm">
+                                <span class="flex h-2 w-2 rounded-full mr-2
+                                    {selectedUser.is_active ? 'bg-green-500' : 'bg-gray-400'}">
+                                </span>
+                                {selectedUser.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-1">Joined</h4>
+                        <p class="text-sm text-gray-900">{selectedUser.created_at_formatted}</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-1">Last Updated</h4>
+                        <p class="text-sm text-gray-900">{selectedUser.updated_at_formatted || 'Never'}</p>
+                    </div>
+                    
+                    {#if selectedUser.email_verified_at}
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Email Verified</h4>
+                            <p class="text-sm text-gray-900">{new Date(selectedUser.email_verified_at).toLocaleDateString()}</p>
+                        </div>
+                    {/if}
+                </div>
+                
+                <!-- Additional Info -->
+                {#if selectedUser.bio || selectedUser.phone || selectedUser.address}
+                    <div class="pt-6 border-t border-gray-200 space-y-4">
+                        {#if selectedUser.bio}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1">Bio</h4>
+                                <p class="text-sm text-gray-900">{selectedUser.bio}</p>
+                            </div>
+                        {/if}
+                        
+                        {#if selectedUser.phone}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1">Phone</h4>
+                                <p class="text-sm text-gray-900">{selectedUser.phone}</p>
+                            </div>
+                        {/if}
+                        
+                        {#if selectedUser.address}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1">Address</h4>
+                                <p class="text-sm text-gray-900">{selectedUser.address}</p>
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
+            </div>
+        {/if}
+        
+        <div slot="footer">
+            <Button 
+                href="/admin/users/{selectedUser?.id}/edit"
+                variant="primary"
+                icon="fas fa-edit"
+            >
+                Edit User
+            </Button>
+            <Button 
+                variant="secondary"
+                on:click={() => (showUserModal = false)}
+            >
+                Close
+            </Button>
+        </div>
+    </Modal>
 </DashboardLayout>
 
 <style>
