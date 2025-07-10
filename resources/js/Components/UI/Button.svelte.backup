@@ -1,0 +1,197 @@
+<script>
+    import { createEventDispatcher } from 'svelte';
+    
+    export let type = 'button';
+    export let variant = 'primary';
+    export let size = 'default';
+    export let loading = false;
+    export let disabled = false;
+    export let icon = '';
+    export let iconPosition = 'left';
+    export let fullWidth = false;
+    export let href = '';
+    
+    const dispatch = createEventDispatcher();
+    
+    // Size classes
+    const sizeClasses = {
+        sm: 'px-3 py-1.5 text-sm',
+        default: 'px-4 py-2 text-sm',
+        lg: 'px-6 py-3 text-base'
+    };
+    
+    // Dynamic style functions
+    const getButtonStyle = (variant, disabled) => {
+        const baseStyles = {
+            primary: {
+                background: disabled ? 'var(--theme-primary-300)' : 'var(--theme-primary-600)',
+                color: 'white',
+                border: 'none'
+            },
+            secondary: {
+                background: disabled ? '#d1d5db' : '#6b7280',
+                color: 'white',
+                border: 'none'
+            },
+            success: {
+                background: disabled ? '#86efac' : '#10b981',
+                color: 'white',
+                border: 'none'
+            },
+            danger: {
+                background: disabled ? '#fca5a5' : '#ef4444',
+                color: 'white',
+                border: 'none'
+            },
+            warning: {
+                background: disabled ? '#fcd34d' : '#f59e0b',
+                color: 'white',
+                border: 'none'
+            },
+            info: {
+                background: disabled ? '#93c5fd' : '#3b82f6',
+                color: 'white',
+                border: 'none'
+            },
+            ghost: {
+                background: 'transparent',
+                color: '#374151',
+                border: '1px solid #d1d5db'
+            },
+            link: {
+                background: 'transparent',
+                color: 'var(--theme-primary-600)',
+                border: 'none'
+            }
+        };
+        
+        return baseStyles[variant] || baseStyles.primary;
+    };
+    
+    const getHoverStyle = (variant) => {
+        const hoverStyles = {
+            primary: { background: 'var(--theme-primary-700)' },
+            secondary: { background: '#4b5563' },
+            success: { background: '#059669' },
+            danger: { background: '#dc2626' },
+            warning: { background: '#d97706' },
+            info: { background: '#2563eb' },
+            ghost: { background: '#f3f4f6' },
+            link: { color: 'var(--theme-primary-700)' }
+        };
+        
+        return hoverStyles[variant] || hoverStyles.primary;
+    };
+    
+    const getFocusRingColor = (variant) => {
+        const focusColors = {
+            primary: 'var(--theme-primary-500)',
+            secondary: '#6b7280',
+            success: '#10b981',
+            danger: '#ef4444',
+            warning: '#f59e0b',
+            info: '#3b82f6',
+            ghost: 'var(--theme-primary-500)',
+            link: 'var(--theme-primary-500)'
+        };
+        
+        return focusColors[variant] || focusColors.primary;
+    };
+    
+    $: buttonStyle = getButtonStyle(variant, disabled || loading);
+    $: hoverStyle = getHoverStyle(variant);
+    $: focusRingColor = getFocusRingColor(variant);
+    
+    $: styleAttribute = Object.entries(buttonStyle)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('; ');
+    
+    // Combine base classes with size
+    $: classes = `
+        inline-flex items-center justify-center font-medium rounded-lg
+        transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50
+        ${fullWidth ? 'w-full' : ''}
+        ${sizeClasses[size]}
+    `.trim().replace(/\s+/g, ' ');
+    
+    $: computedIcon = loading ? 'fas fa-spinner fa-spin' : icon;
+    
+    function handleClick(event) {
+        if (!disabled && !loading) {
+            dispatch('click', event);
+        }
+    }
+</script>
+
+{#if href && !disabled && !loading}
+    <a
+        {href}
+        class={classes}
+        style={styleAttribute}
+        on:click={handleClick}
+        on:mouseenter={(e) => {
+            if (!disabled && !loading) {
+                Object.entries(hoverStyle).forEach(([key, value]) => {
+                    e.currentTarget.style[key] = value;
+                });
+            }
+        }}
+        on:mouseleave={(e) => {
+            if (!disabled && !loading) {
+                Object.entries(buttonStyle).forEach(([key, value]) => {
+                    e.currentTarget.style[key] = value;
+                });
+            }
+        }}
+        on:focus={(e) => {
+            e.currentTarget.style.boxShadow = `0 0 0 3px ${focusRingColor}4D`;
+        }}
+        on:blur={(e) => {
+            e.currentTarget.style.boxShadow = '';
+        }}
+    >
+        {#if computedIcon && iconPosition === 'left'}
+            <i class="{computedIcon} {$$slots.default ? 'mr-2' : ''}"></i>
+        {/if}
+        <slot />
+        {#if computedIcon && iconPosition === 'right'}
+            <i class="{computedIcon} {$$slots.default ? 'ml-2' : ''}"></i>
+        {/if}
+    </a>
+{:else}
+    <button
+        {type}
+        disabled={disabled || loading}
+        class={classes}
+        style={styleAttribute}
+        on:click={handleClick}
+        on:mouseenter={(e) => {
+            if (!disabled && !loading) {
+                Object.entries(hoverStyle).forEach(([key, value]) => {
+                    e.currentTarget.style[key] = value;
+                });
+            }
+        }}
+        on:mouseleave={(e) => {
+            if (!disabled && !loading) {
+                Object.entries(buttonStyle).forEach(([key, value]) => {
+                    e.currentTarget.style[key] = value;
+                });
+            }
+        }}
+        on:focus={(e) => {
+            e.currentTarget.style.boxShadow = `0 0 0 3px ${focusRingColor}4D`;
+        }}
+        on:blur={(e) => {
+            e.currentTarget.style.boxShadow = '';
+        }}
+    >
+        {#if computedIcon && iconPosition === 'left'}
+            <i class="{computedIcon} {$$slots.default ? 'mr-2' : ''}"></i>
+        {/if}
+        <slot />
+        {#if computedIcon && iconPosition === 'right'}
+            <i class="{computedIcon} {$$slots.default ? 'ml-2' : ''}"></i>
+        {/if}
+    </button>
+{/if}

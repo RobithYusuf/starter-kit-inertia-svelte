@@ -1,0 +1,317 @@
+@import 'tailwindcss';
+
+/* Theme Configuration for Tailwind CSS v4 */
+@theme inline {
+    /* Primary colors with all shades */
+    --color-primary-50: var(--theme-primary-50);
+    --color-primary-100: var(--theme-primary-100);
+    --color-primary-200: var(--theme-primary-200);
+    --color-primary-300: var(--theme-primary-300);
+    --color-primary-400: var(--theme-primary-400);
+    --color-primary-500: var(--theme-primary-500);
+    --color-primary-600: var(--theme-primary-600);
+    --color-primary-700: var(--theme-primary-700);
+    --color-primary-800: var(--theme-primary-800);
+    --color-primary-900: var(--theme-primary-900);
+    --color-accent: var(--theme-accent);
+}
+
+@layer base {
+    /* Default Orange Theme */
+    :root {
+        --theme-primary-50: #fff7ed;
+        --theme-primary-100: #ffedd5;
+        --theme-primary-200: #fed7aa;
+        --theme-primary-300: #fdba74;
+        --theme-primary-400: #fb923c;
+        --theme-primary-500: #f97316;
+        --theme-primary-600: #ea580c;
+        --theme-primary-700: #c2410c;
+        --theme-primary-800: #9a3412;
+        --theme-primary-900: #7c2d12;
+        --theme-accent: #f97316;
+    }
+    
+    /* Blue Theme */
+    [data-theme='blue'] {
+        --theme-primary-50: #eff6ff;
+        --theme-primary-100: #dbeafe;
+        --theme-primary-200: #bfdbfe;
+        --theme-primary-300: #93c5fd;
+        --theme-primary-400: #60a5fa;
+        --theme-primary-500: #3b82f6;
+        --theme-primary-600: #2563eb;
+        --theme-primary-700: #1d4ed8;
+        --theme-primary-800: #1e40af;
+        --theme-primary-900: #1e3a8a;
+        --theme-accent: #3b82f6;
+    }
+    
+    /* Emerald Theme */
+    [data-theme='emerald'] {
+        --theme-primary-50: #ecfdf5;
+        --theme-primary-100: #d1fae5;
+        --theme-primary-200: #a7f3d0;
+        --theme-primary-300: #6ee7b7;
+        --theme-primary-400: #34d399;
+        --theme-primary-500: #10b981;
+        --theme-primary-600: #059669;
+        --theme-primary-700: #047857;
+        --theme-primary-800: #065f46;
+        --theme-primary-900: #064e3b;
+        --theme-accent: #10b981;
+    }
+    
+    /* Purple Theme */
+    [data-theme='purple'] {
+        --theme-primary-50: #faf5ff;
+        --theme-primary-100: #f3e8ff;
+        --theme-primary-200: #e9d5ff;
+        --theme-primary-300: #d8b4fe;
+        --theme-primary-400: #c084fc;
+        --theme-primary-500: #a855f7;
+        --theme-primary-600: #9333ea;
+        --theme-primary-700: #7c3aed;
+        --theme-primary-800: #6b21a8;
+        --theme-primary-900: #581c87;
+        --theme-accent: #a855f7;
+    }
+    
+    /* Slate Theme */
+    [data-theme='slate'] {
+        --theme-primary-50: #f8fafc;
+        --theme-primary-100: #f1f5f9;
+        --theme-primary-200: #e2e8f0;
+        --theme-primary-300: #cbd5e1;
+        --theme-primary-400: #94a3b8;
+        --theme-primary-500: #64748b;
+        --theme-primary-600: #475569;
+        --theme-primary-700: #334155;
+        --theme-primary-800: #1e293b;
+        --theme-primary-900: #0f172a;
+        --theme-accent: #64748b;
+    }
+}
+
+/* Global cursor pointer for interactive elements */
+button,
+a,
+[role="button"],
+[role="link"],
+input[type="submit"],
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Disabled elements should show not-allowed cursor */
+button:disabled,
+a:disabled,
+input:disabled,
+select:disabled,
+.cursor-not-allowed {
+    cursor: not-allowed !important;
+}
+
+/* Text inputs and textareas should show text cursor */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea {
+    cursor: text;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Ensure proper font loading */
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Remove default focus outline - let Tailwind handle focus styles */
+*:focus {
+    outline: none;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Prevent text selection on buttons and interactive elements */
+button,
+a,
+[role="button"] {
+    user-select: none;
+}
+
+/* Make sure links don't have underlines by default */
+a {
+    text-decoration: none;
+}
+
+/* Only show underline on hover for links with specific class */
+a.hover\:underline:hover {
+    text-decoration: underline;
+}
+
+/* Button gradient backgrounds for Tailwind v4 */
+.bg-gradient-to-r {
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-br {
+    background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
+/* Orange gradients */
+.from-orange-600 {
+    --tw-gradient-from: #ea580c;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(234 88 12 / 0));
+}
+
+.to-orange-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #c2410c;
+}
+
+.hover\:from-orange-700:hover {
+    --tw-gradient-from: #c2410c;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(194 65 12 / 0));
+}
+
+.hover\:to-orange-800:hover {
+    --tw-gradient-stops: var(--tw-gradient-from), #9a3412;
+}
+
+/* Other color gradients */
+.from-emerald-600 {
+    --tw-gradient-from: #059669;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(5 150 105 / 0));
+}
+
+.to-emerald-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #047857;
+}
+
+.from-red-600 {
+    --tw-gradient-from: #dc2626;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(220 38 38 / 0));
+}
+
+.to-red-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #b91c1c;
+}
+
+.from-amber-500 {
+    --tw-gradient-from: #f59e0b;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(245 158 11 / 0));
+}
+
+.to-amber-600 {
+    --tw-gradient-stops: var(--tw-gradient-from), #d97706;
+}
+
+.from-cyan-600 {
+    --tw-gradient-from: #0891b2;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(8 145 178 / 0));
+}
+
+.to-cyan-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #0e7490;
+}
+
+.from-blue-600 {
+    --tw-gradient-from: #2563eb;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(37 99 235 / 0));
+}
+
+.to-blue-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #1d4ed8;
+}
+
+.from-gray-600 {
+    --tw-gradient-from: #4b5563;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(75 85 99 / 0));
+}
+
+.to-gray-700 {
+    --tw-gradient-stops: var(--tw-gradient-from), #374151;
+}
+
+/* Hover gradient states */
+.hover\:from-emerald-700:hover {
+    --tw-gradient-from: #047857;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(4 120 87 / 0));
+}
+
+.hover\:to-emerald-800:hover {
+    --tw-gradient-stops: var(--tw-gradient-from), #065f46;
+}
+
+.hover\:from-red-700:hover {
+    --tw-gradient-from: #b91c1c;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(185 28 28 / 0));
+}
+
+.hover\:to-red-800:hover {
+    --tw-gradient-stops: var(--tw-gradient-from), #991b1b;
+}
+
+.hover\:from-amber-600:hover {
+    --tw-gradient-from: #d97706;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(217 119 6 / 0));
+}
+
+.hover\:to-amber-700:hover {
+    --tw-gradient-stops: var(--tw-gradient-from), #b45309;
+}
+
+.hover\:from-cyan-700:hover {
+    --tw-gradient-from: #0e7490;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(14 116 144 / 0));
+}
+
+.hover\:to-cyan-800:hover {
+    --tw-gradient-stops: var(--tw-gradient-from), #155e75;
+}
+
+/* Fix for button icon spacing */
+button > i:first-child:not(:last-child),
+a > i:first-child:not(:last-child) {
+    margin-right: 0.5rem;
+}
+
+button > i:last-child:not(:first-child),
+a > i:last-child:not(:first-child) {
+    margin-left: 0.5rem;
+}
