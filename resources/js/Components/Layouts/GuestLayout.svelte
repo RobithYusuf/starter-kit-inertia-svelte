@@ -6,7 +6,7 @@
     export let showNav = true;
     export let showFooter = true;
     
-    $: isAuthenticated = $page.props.auth?.user !== null;
+    $: isAuthenticated = $page.props.auth?.user !== null && $page.props.auth?.user !== undefined;
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex flex-col">
@@ -21,7 +21,7 @@
                 <div class="flex items-center space-x-4">
                     {#if isAuthenticated}
                         <Button 
-                            href={$page.props.auth.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
+                            href={$page.props.auth?.user?.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
                             variant="primary"
                             icon="fas fa-tachometer-alt"
                         >

@@ -18,6 +18,7 @@ use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use App\Responses\LogoutResponse;
+use Illuminate\Validation\ValidationException;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -62,14 +63,28 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request) {
             $user = User::where('email', $request->email)->first();
 
-            if ($user && Hash::check($request->password, $user->password)) {
-                // Check if user is active
-                if (!$user->is_active) {
-                    throw new \Exception('Your account has been deactivated.');
-                }
-
-                return $user;
+            // Check if user exists
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'email' => [__('auth.email_not_found')],
+                ]);
             }
+
+            // Check password
+            if (!Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'password' => [__('auth.password')],
+                ]);
+            }
+
+            // Check if user is active
+            if (!$user->is_active) {
+                throw ValidationException::withMessages([
+                    'email' => [__('auth.inactive')],
+                ]);
+            }
+
+            return $user;
         });
 
         // Login View

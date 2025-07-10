@@ -27,7 +27,9 @@
     subtitle="Sign in to your account to continue"
 >
     <!-- Error Alert -->
-    <FormError errors={$form.errors} title="Please check your credentials" />
+    {#if Object.keys($form.errors).length > 0}
+        <FormError errors={$form.errors} title="Login gagal" />
+    {/if}
     
     <!-- Form -->
     <form on:submit|preventDefault={submit} class="space-y-5">

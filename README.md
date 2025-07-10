@@ -1,61 +1,506 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Laravel Inertia Svelte Starter Kit
+
+Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js**, dan **Svelte 5**. Dilengkapi dengan authentication, dashboard, user management, dan theme system.
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/Svelte-5.x-FF3E00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte">
+  <img src="https://img.shields.io/badge/Inertia.js-1.x-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
 </p>
 
-## About Laravel
+## 📋 Table of Contents
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Features](#-features)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Configuration](#%EF%B8%8F-configuration)
+- [Usage](#-usage)
+- [Project Structure](#-project-structure)
+- [Components](#-components)
+- [Customization](#-customization)
+- [Deployment](#-deployment)
+- [Troubleshooting](#-troubleshooting)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔐 Authentication & Authorization
+- Login, Register, Forgot Password, Reset Password
+- Email verification ready
+- Role-based access control (Admin & Member)
+- Protected routes dengan middleware
+- Pesan error yang informatif (email tidak ditemukan, password salah, akun dinonaktifkan)
 
-## Learning Laravel
+### 👥 User Management
+- CRUD users dengan DataTable
+- Search, sort, dan pagination
+- Bulk actions support
+- User avatar dengan initial generator
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🎨 UI/UX Features
+- **5 Theme Colors**: Orange (default), Blue, Emerald, Purple, Slate
+- **Responsive Design**: Mobile-first approach
+- **Dark Mode Ready**: Struktur sudah disiapkan
+- **Toast Notifications**: Success, error, info alerts
+- **Loading States**: Skeleton loader & spinner
+- **Empty States**: Informative placeholder
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🛠️ Developer Experience
+- **Hot Module Replacement**: Instant preview
+- **TypeScript Ready**: Dapat ditambahkan
+- **Component Library**: 30+ reusable components
+- **Form Handling**: Terintegrasi dengan Inertia
+- **Validation**: Client & server-side dengan pesan bahasa Indonesia
+- **SEO Friendly**: Meta tags management
+- **Multi-language Support**: Bahasa Indonesia & English
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📦 Requirements
 
-## Laravel Sponsors
+Pastikan sistem Anda memenuhi requirements berikut:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **PHP** >= 8.3
+- **Composer** >= 2.7
+- **Node.js** >= 20.0
+- **NPM** >= 10.0 atau Yarn
+- **MySQL** >= 8.0 atau PostgreSQL >= 15
+- **Git**
 
-### Premium Partners
+### PHP Extensions Required:
+- BCMath PHP Extension
+- Ctype PHP Extension
+- cURL PHP Extension
+- DOM PHP Extension
+- Fileinfo PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PCRE PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🔧 Installation
 
-## Contributing
+### 1. Clone Repository
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Clone repository
+git clone https://github.com/RobithYusuf/starter-kit-inertia-svelte.git my-app
 
-## Code of Conduct
+# Masuk ke directory
+cd my-app
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Install Dependencies
 
-## Security Vulnerabilities
+```bash
+# Install PHP dependencies
+composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Install Node dependencies
+npm install
+# atau menggunakan yarn
+yarn install
+```
 
-## License
+### 3. Environment Setup
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+# Copy file environment
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+```
+
+### 4. Configure Database
+
+Edit file `.env` dan sesuaikan konfigurasi database:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+### 5. Run Migrations & Seeders
+
+```bash
+# Buat database tables
+php artisan migrate
+
+# Isi data dummy (optional)
+php artisan db:seed
+```
+
+Seeder akan membuat:
+- Admin user: `admin@example.com` / `password`
+- Member user: `member@example.com` / `password`
+- 50 dummy users untuk testing
+
+### 6. Build Assets
+
+```bash
+# Development mode dengan HMR
+npm run dev
+
+# Production build
+npm run build
+```
+
+### 7. Start Development Server
+
+```bash
+# Terminal 1: Laravel server
+php artisan serve
+
+# Terminal 2: Vite dev server (jika belum running)
+npm run dev
+```
+
+Aplikasi dapat diakses di: `http://localhost:8000`
+
+## ⚙️ Configuration
+
+### Email Configuration
+
+Untuk fitur email (reset password, verification), konfigurasikan di `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@yourapp.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+### Storage Link
+
+Untuk upload file/images:
+
+```bash
+php artisan storage:link
+```
+
+### Queue Configuration (Optional)
+
+Untuk background jobs:
+
+```env
+QUEUE_CONNECTION=database
+```
+
+```bash
+php artisan queue:table
+php artisan migrate
+php artisan queue:work
+```
+
+## 💻 Usage
+
+### Default Users
+
+Setelah menjalankan seeder, gunakan akun berikut:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@example.com | password |
+| Member | member@example.com | password |
+
+### Struktur Route
+
+```php
+// Public routes
+Route::get('/', Welcome::class);
+Route::get('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'register']);
+
+// Authenticated routes
+Route::middleware(['auth'])->group(function () {
+    // Member area
+    Route::get('/dashboard', MemberDashboard::class);
+    
+    // Admin area
+    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', AdminDashboard::class);
+        Route::resource('users', UserController::class);
+        Route::get('/settings', Settings::class);
+    });
+});
+```
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Middleware/
+│   └── Models/
+├── resources/
+│   ├── js/
+│   │   ├── Components/     # Reusable Svelte components
+│   │   │   ├── Dashboard/
+│   │   │   ├── Layouts/
+│   │   │   ├── Shared/
+│   │   │   └── UI/
+│   │   ├── Pages/         # Svelte pages
+│   │   │   ├── Auth/
+│   │   │   ├── Dashboard/
+│   │   │   └── Error.svelte
+│   │   ├── Stores/        # Svelte stores
+│   │   └── app.js         # Main entry point
+│   └── css/
+│       └── app.css        # Tailwind CSS
+├── routes/
+│   └── web.php           # Application routes
+├── database/
+│   ├── migrations/
+│   └── seeders/
+└── tests/
+```
+
+## 🧩 Components
+
+Starter kit menyediakan 30+ komponen siap pakai:
+
+### UI Components
+- `Button` - Tombol dengan berbagai varian
+- `Card` - Container dengan shadow
+- `Modal` - Dialog/popup
+- `Alert` - Notifikasi toast
+- `EmptyState` - Placeholder kosong
+- `Pagination` - Navigasi halaman
+- Dan lainnya...
+
+### Form Components
+- `Input` - Text input standard
+- `IconInput` - Input dengan icon
+- `EmailInput` - Khusus email
+- `PasswordInput` - Dengan toggle visibility
+- `RadioOption` - Custom radio button
+- `Dropdown` - Select replacement
+- Dan lainnya...
+
+Dokumentasi lengkap: [Components README](resources/js/Components/README.md)
+
+## 🎨 Customization
+
+### Mengganti Theme
+
+1. Melalui UI:
+   - Login sebagai admin
+   - Pergi ke Settings
+   - Pilih theme yang diinginkan
+
+2. Menambah theme baru:
+```javascript
+// resources/js/Stores/themeStore.js
+export const presetThemes = {
+    // Theme baru
+    indigo: {
+        name: 'Indigo Night',
+        colors: {
+            primary50: '#eef2ff',
+            primary100: '#e0e7ff',
+            // ... warna lainnya
+        }
+    }
+};
+```
+
+### Menambah Role Baru
+
+1. Update User model:
+```php
+// app/Models/User.php
+public function hasRole($role)
+{
+    return $this->role === $role;
+}
+```
+
+2. Buat middleware baru:
+```php
+php artisan make:middleware EditorMiddleware
+```
+
+3. Register di Kernel:
+```php
+// app/Http/Kernel.php
+protected $routeMiddleware = [
+    'editor' => \App\Http\Middleware\EditorMiddleware::class,
+];
+```
+
+### Customize Components
+
+Semua komponen dapat di-customize dengan props atau override styles:
+
+```svelte
+<!-- Custom button -->
+<Button 
+  variant="primary"
+  size="lg"
+  class="!bg-pink-500 !hover:bg-pink-600"
+>
+  Custom Button
+</Button>
+```
+
+## 🚀 Deployment
+
+### Production Build
+
+```bash
+# Install dependencies (production)
+composer install --optimize-autoloader --no-dev
+
+# Build assets
+npm run build
+
+# Cache optimization
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### Environment Production
+
+Update `.env`:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://yourdomain.com
+
+# Force HTTPS
+ASSET_URL="${APP_URL}"
+```
+
+### Nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /path/to/your/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**1. Blank page atau error 500**
+```bash
+# Check permissions
+chmod -R 755 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
+# Clear cache
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+**2. Vite manifest not found**
+```bash
+# Development
+npm run dev
+
+# Production
+npm run build
+```
+
+**3. Database connection refused**
+- Pastikan MySQL/PostgreSQL running
+- Check credentials di `.env`
+- Test connection: `php artisan db:show`
+
+**4. Email tidak terkirim**
+- Gunakan Mailtrap untuk testing
+- Check SMTP credentials
+- Enable "Less secure app access" untuk Gmail
+
+**5. Storage permission denied**
+```bash
+# Linux/Mac
+sudo chmod -R 775 storage
+sudo chown -R $USER:www-data storage
+
+# Windows (run as Administrator)
+icacls storage /grant Everyone:F /T
+```
+
+### Debug Mode
+
+Untuk debugging, aktifkan di `.env`:
+```env
+APP_DEBUG=true
+```
+
+**⚠️ WARNING**: Jangan aktifkan debug mode di production!
+
+## 📚 Resources
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [Inertia.js Documentation](https://inertiajs.com)
+- [Svelte Documentation](https://svelte.dev/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 👨‍💻 Author
+
+Created with ❤️ by [Your Name](https://github.com/RobithYusuf
+
+---
+
+<p align="center">
+  <strong>Happy Coding! 🎉</strong>
+</p>

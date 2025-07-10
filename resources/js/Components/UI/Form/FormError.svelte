@@ -2,13 +2,21 @@
     export let errors = {};
     export let title = 'Please fix the following errors';
     export let singleError = '';
+    export let message = ''; // For single message display
+    export let className = '';
     
-    $: hasErrors = singleError || (errors && Object.keys(errors).length > 0);
-    $: errorList = singleError ? [singleError] : Object.values(errors).filter(Boolean);
+    $: hasErrors = message || singleError || (errors && Object.keys(errors).length > 0);
+    $: errorList = message 
+        ? [message]
+        : singleError 
+        ? [singleError] 
+        : Object.values(errors)
+            .flat() // Flatten arrays in case of multiple errors per field
+            .filter(Boolean);
 </script>
 
 {#if hasErrors}
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 {className}">
         <div class="flex items-start">
             <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
             <div class="flex-1">
