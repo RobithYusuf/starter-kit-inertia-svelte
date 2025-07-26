@@ -1,4 +1,4 @@
-import { createInertiaApp } from "@inertiajs/svelte";
+import { createInertiaApp, router } from "@inertiajs/svelte";
 import { mount } from "svelte";
 import { presetThemes } from "./Stores/themeStore";
 
@@ -13,6 +13,28 @@ function getProgressColor() {
     const theme = presetThemes[savedTheme];
     return theme ? theme.colors.primary600 : '#f97316';
 }
+
+// Setup page transition effects
+let isNavigating = false;
+
+router.on('before', () => {
+    if (!isNavigating) {
+        isNavigating = true;
+        document.body.classList.add('page-transitioning');
+    }
+});
+
+router.on('navigate', () => {
+    setTimeout(() => {
+        document.body.classList.remove('page-transitioning');
+        isNavigating = false;
+    }, 50);
+});
+
+router.on('success', () => {
+    // Instant scroll to top - more responsive
+    window.scrollTo(0, 0);
+});
 
 createInertiaApp({
     resolve: async (name) => {

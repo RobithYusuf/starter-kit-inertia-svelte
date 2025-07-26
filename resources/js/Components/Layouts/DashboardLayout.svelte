@@ -83,7 +83,7 @@
     $: userRole = $page.props.auth?.user?.role || 'member';
 </script>
 
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50 dashboard-layout">
     <AlertContainer />
     
     <div class="flex h-screen overflow-hidden">
@@ -98,6 +98,7 @@
                     <!-- Sidebar toggle buttons -->
                     <div class="flex items-center">
                         <!-- Mobile menu button -->
+                        <!-- svelte-ignore a11y_consider_explicit_label -->
                         <button
                             id="sidebar-toggle"
                             on:click={toggleSidebar}
@@ -107,6 +108,7 @@
                         </button>
                         
                         <!-- Tablet/Desktop collapse button -->
+                        <!-- svelte-ignore a11y_consider_explicit_label -->
                         <button
                             on:click={toggleSidebarCollapse}
                             class="hidden md:block p-2 rounded-lg hover:bg-gray-100 transition-colors"

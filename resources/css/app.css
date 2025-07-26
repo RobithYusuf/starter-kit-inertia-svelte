@@ -315,3 +315,75 @@ button > i:last-child:not(:first-child),
 a > i:last-child:not(:first-child) {
     margin-left: 0.5rem;
 }
+
+/* Professional Page Transitions Dashboard Panel */
+body {
+    transition: opacity 0.1s ease-out;
+}
+
+body.page-transitioning {
+    opacity: 0.95;
+}
+
+/* Main content area - subtle fade */
+main {
+    transition: opacity 0.25s ease-out;
+}
+
+body.page-transitioning main {
+    opacity: 0.8;
+}
+
+/* Dashboard page animation - left to right */
+.dashboard-layout main > div {
+    animation: dashboardEnter 0.4s ease-out;
+}
+
+@keyframes dashboardEnter {
+    from {
+        opacity: 0;
+        transform: translateX(-23px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Auth/Guest page animation - bottom to top */
+.auth-page-content,
+.guest-layout main > div {
+    animation: pageEnter 0.3s ease-out;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Subtle sidebar navigation effects */
+aside a {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* Subtle background change on hover */
+aside a:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Subtle DataTable transitions */
+.datatable-container {
+    transition: opacity 0.15s ease-out;
+}
+
+/* Subtle loading state */
+.datatable-loading {
+    opacity: 0.9;
+}

@@ -22,9 +22,10 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-.claude/
+# .claude/
 
 # YoYo AI version control directory
 .yoyo/
 # YoYo AI version control directory
 .yoyo/
+CLAUDE.md

@@ -67,7 +67,7 @@
     }
 </script>
 
-<div class="overflow-hidden rounded-lg border border-gray-200">
+<div class="overflow-hidden rounded-lg border border-gray-200 datatable-container {loadingData ? 'datatable-loading' : ''}">
     <div class="overflow-x-auto">
         <table class="w-full">
             <thead class="bg-gray-50 border-b border-gray-200">
@@ -108,8 +108,9 @@
                         </td>
                     </tr>
                 {:else if data.length > 0}
-                    {#each data as row}
-                        <tr class="hover:bg-gray-50 transition-colors">
+                    {#each data as row, index (row.id || index)}
+                        <tr 
+                            class="hover:bg-gray-50 transition-colors">
                             {#each columns as column}
                                 <td class="px-4 py-3 text-sm {column.className || ''} {column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''}">
                                     {#if column.type === 'actions'}

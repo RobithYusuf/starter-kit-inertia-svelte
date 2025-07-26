@@ -10,7 +10,7 @@
     let innerWidth;
     
     $: userRole = $page.props.auth?.user?.role || 'member';
-    $: currentPath = $page.url.split('?')[0];
+    $: currentPath = $page.url ? $page.url.split('?')[0] : '';
     $: menuCategories = userRole === 'admin' ? adminMenuCategories : memberMenuCategories;
     $: isMobile = innerWidth < 768;
     $: effectiveCollapsed = !isMobile && sidebarCollapsed;
