@@ -135,6 +135,45 @@
         ]}
     />
     
+    <!-- Stats -->
+    <div class="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                    <i class="fas fa-key text-primary-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900">
+                        {permissionGroups.reduce((acc, g) => acc + g.permissions.length, 0)}
+                    </p>
+                    <p class="text-sm text-gray-500">Total Permissions</p>
+                </div>
+            </div>
+        </Card>
+        <Card>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-user-tag text-purple-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900">{roles.length}</p>
+                    <p class="text-sm text-gray-500">Roles</p>
+                </div>
+            </div>
+        </Card>
+        <Card>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-layer-group text-green-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900">{permissionGroups.length}</p>
+                    <p class="text-sm text-gray-500">Permission Groups</p>
+                </div>
+            </div>
+        </Card>
+    </div>
+    
     <!-- Legend -->
     <Card margin="mb-4">
         <div class="flex flex-wrap items-center gap-4 text-sm">
@@ -146,7 +185,9 @@
                 <span class="text-gray-600">Granted</span>
             </div>
             <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded bg-gray-200"></div>
+                <div class="w-5 h-5 rounded bg-gray-200 flex items-center justify-center">
+                    <i class="fas fa-times text-gray-400 text-xs"></i>
+                </div>
                 <span class="text-gray-600">Not Granted</span>
             </div>
             <div class="flex items-center gap-2">
@@ -270,45 +311,6 @@
             </div>
         {/if}
     </Card>
-    
-    <!-- Stats -->
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                    <i class="fas fa-key text-primary-600"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold text-gray-900">
-                        {permissionGroups.reduce((acc, g) => acc + g.permissions.length, 0)}
-                    </p>
-                    <p class="text-sm text-gray-500">Total Permissions</p>
-                </div>
-            </div>
-        </Card>
-        <Card>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                    <i class="fas fa-user-tag text-purple-600"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold text-gray-900">{roles.length}</p>
-                    <p class="text-sm text-gray-500">Roles</p>
-                </div>
-            </div>
-        </Card>
-        <Card>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <i class="fas fa-layer-group text-green-600"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold text-gray-900">{permissionGroups.length}</p>
-                    <p class="text-sm text-gray-500">Permission Groups</p>
-                </div>
-            </div>
-        </Card>
-    </div>
     
     <ConfirmModal
         show={confirmDelete}
