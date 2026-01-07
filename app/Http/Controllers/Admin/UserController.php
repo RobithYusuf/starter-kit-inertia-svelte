@@ -7,12 +7,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::with('roles');
         
         // Search
         if ($search = $request->get('search')) {
@@ -24,7 +25,9 @@ class UserController extends Controller
         
         // Filter by role
         if ($role = $request->get('role')) {
-            $query->where('role', $role);
+            $query->whereHas('roles', function($q) use ($role) {
+                $q->where('name', $role);
+            });
         }
         
         // Filter by status
@@ -37,7 +40,7 @@ class UserController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         
         // Validate sort field to prevent SQL injection
-        $allowedSortFields = ['name', 'email', 'role', 'is_active', 'created_at'];
+        $allowedSortFields = ['name', 'email', 'is_active', 'created_at'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'created_at';
         }
@@ -48,21 +51,31 @@ class UserController extends Controller
             ->paginate($perPage)
             ->withQueryString();
         
-        // Format dates for display
+        // Format data for display
         $users->through(function ($user) {
             $user->created_at_formatted = $user->created_at ? $user->created_at->format('d M Y') : '-';
+            $user->role = $user->roles->first()?->name ?? 'member';
+            $user->roles_list = $user->getRoleNames()->toArray();
             return $user;
         });
+        
+        // Get available roles for filter
+        $roles = Role::pluck('name')->toArray();
         
         return Inertia::render('Dashboard/Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'role', 'is_active', 'per_page', 'sort_field', 'sort_order']),
+            'availableRoles' => $roles,
         ]);
     }
     
     public function create()
     {
-        return Inertia::render('Dashboard/Admin/Users/Create');
+        $roles = Role::pluck('name')->toArray();
+        
+        return Inertia::render('Dashboard/Admin/Users/Create', [
+            'availableRoles' => $roles,
+        ]);
     }
     
     public function store(Request $request)
@@ -71,14 +84,18 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,member',
+            'role' => 'required|string|exists:roles,name',
             'is_active' => 'boolean',
         ]);
+        
+        $role = $validated['role'];
+        unset($validated['role']);
         
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_active'] = $validated['is_active'] ?? true;
         
-        User::create($validated);
+        $user = User::create($validated);
+        $user->assignRole($role);
         
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
@@ -86,8 +103,17 @@ class UserController extends Controller
     
     public function edit(User $user)
     {
+        $roles = Role::pluck('name')->toArray();
+        
         return Inertia::render('Dashboard/Admin/Users/Edit', [
-            'user' => $user->only('id', 'name', 'email', 'role', 'is_active'),
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->first()?->name ?? 'member',
+                'is_active' => $user->is_active,
+            ],
+            'availableRoles' => $roles,
         ]);
     }
     
@@ -97,9 +123,12 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,member',
+            'role' => 'required|string|exists:roles,name',
             'is_active' => 'boolean',
         ]);
+        
+        $role = $validated['role'];
+        unset($validated['role']);
         
         if (empty($validated['password'])) {
             unset($validated['password']);
@@ -108,6 +137,7 @@ class UserController extends Controller
         }
         
         $user->update($validated);
+        $user->syncRoles([$role]);
         
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
@@ -118,6 +148,11 @@ class UserController extends Controller
         // Prevent deleting yourself
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete your own account.');
+        }
+        
+        // Prevent deleting super-admin
+        if ($user->hasRole('super-admin')) {
+            return back()->with('error', 'Cannot delete super-admin user.');
         }
         
         $user->delete();

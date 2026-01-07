@@ -6,23 +6,23 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckRole
+class CheckPermission
 {
     /**
      * Handle an incoming request.
-     * Supports multiple roles: role:admin,member
+     * Supports multiple permissions: permission:user.view,user.edit
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string ...$roles): Response
+    public function handle(Request $request, Closure $next, string ...$permissions): Response
     {
         if (!$request->user()) {
             abort(403, 'Unauthorized access.');
         }
         
-        // Check if user has any of the specified roles
-        if (!$request->user()->hasAnyRole($roles)) {
-            abort(403, 'Unauthorized access.');
+        // Check if user has any of the specified permissions
+        if (!$request->user()->hasAnyPermission($permissions)) {
+            abort(403, 'You do not have permission to access this resource.');
         }
 
         return $next($request);

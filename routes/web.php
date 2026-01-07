@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
         $request->fulfill();
         
         $user = $request->user();
-        if ($user->role === 'admin') {
+        if ($user->hasAnyRole(['admin', 'super-admin'])) {
             return redirect('/admin/dashboard')->with('success', 'Email verified successfully!');
         }
         return redirect('/dashboard')->with('success', 'Email verified successfully!');
@@ -66,8 +66,8 @@ Route::middleware('auth')->group(function () {
     })->middleware('throttle:6,1')->name('verification.send');
 });
 
-// Admin Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+// Admin Routes (super-admin and admin)
+Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // User Management

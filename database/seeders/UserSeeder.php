@@ -13,25 +13,36 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create super admin user
+        $superAdmin = User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@example.com',
+            'password' => Hash::make('password'),
+            'is_active' => true,
+        ]);
+        $superAdmin->assignRole('super-admin');
+        
         // Create admin user
-        User::create([
+        $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin',
             'is_active' => true,
         ]);
+        $admin->assignRole('admin');
         
         // Create member user
-        User::create([
+        $member = User::create([
             'name' => 'Member User',
             'email' => 'member@example.com',
             'password' => Hash::make('password'),
-            'role' => 'member',
             'is_active' => true,
         ]);
+        $member->assignRole('member');
         
-        // Create additional users (200 users)
-        User::factory(200)->create();
+        // Create additional users (50 users) with member role
+        User::factory(50)->create()->each(function ($user) {
+            $user->assignRole('member');
+        });
     }
 }

@@ -1,12 +1,13 @@
 # 🚀 Laravel Inertia Svelte Starter Kit
 
-Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js v2**, dan **Svelte 5** (Runes). Dilengkapi dengan authentication, dashboard, user management, component library, dan theme system.
+Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js v2**, dan **Svelte 5** (Runes). Dilengkapi dengan authentication, role-based access control, granular permissions, component library, dan theme system.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
   <img src="https://img.shields.io/badge/Svelte-5.46-FF3E00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte">
   <img src="https://img.shields.io/badge/Inertia.js-2.3-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
+  <img src="https://img.shields.io/badge/Spatie_Permission-6.x-2196F3?style=for-the-badge" alt="Spatie Permission">
 </p>
 
 ## 📋 Table of Contents
@@ -16,6 +17,7 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 - [Installation](#-installation)
 - [Configuration](#%EF%B8%8F-configuration)
 - [Usage](#-usage)
+- [Roles & Permissions](#-roles--permissions)
 - [Project Structure](#-project-structure)
 - [Components](#-components)
 - [Customization](#-customization)
@@ -28,12 +30,14 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 - Login, Register, Forgot Password, Reset Password
 - Email verification (optional, configurable)
 - Session management (view & revoke active sessions)
-- Role-based access control (Admin & Member)
+- **Spatie Laravel Permission** for roles & permissions
+- Multiple roles support (Super Admin, Admin, Member)
+- Granular permissions (user.view, user.create, user.edit, etc.)
 - Protected routes dengan middleware
-- Pesan error yang informatif (email tidak ditemukan, password salah, akun dinonaktifkan)
 
 ### 👥 User Management
 - CRUD users dengan DataTable
+- Assign roles to users
 - Search, sort, dan pagination
 - Bulk actions support
 - User avatar dengan initial generator
@@ -66,7 +70,7 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 
 Pastikan sistem Anda memenuhi requirements berikut:
 
-- **PHP** >= 8.3
+- **PHP** >= 8.2
 - **Composer** >= 2.7
 - **Node.js** >= 20.0
 - **NPM** >= 10.0 atau Yarn
@@ -218,6 +222,7 @@ Setelah menjalankan seeder, gunakan akun berikut:
 
 | Role | Email | Password |
 |------|-------|----------|
+| Super Admin | superadmin@example.com | password |
 | Admin | admin@example.com | password |
 | Member | member@example.com | password |
 
@@ -234,13 +239,101 @@ Route::middleware(['auth'])->group(function () {
     // Member area
     Route::get('/dashboard', MemberDashboard::class);
     
-    // Admin area
-    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+    // Admin area (super-admin and admin roles)
+    Route::middleware(['role:super-admin,admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', AdminDashboard::class);
         Route::resource('users', UserController::class);
         Route::get('/settings', Settings::class);
     });
 });
+```
+
+## 🔑 Roles & Permissions
+
+Starter kit menggunakan [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) untuk manajemen roles dan permissions.
+
+### Default Roles
+
+| Role | Description | Level |
+|------|-------------|-------|
+| `super-admin` | Full access to all features | Highest |
+| `admin` | Manage users, settings, view components | High |
+| `member` | Basic dashboard and profile access | Normal |
+
+### Available Permissions
+
+| Module | Permissions |
+|--------|-------------|
+| **Users** | `user.view`, `user.create`, `user.edit`, `user.delete` |
+| **Roles** | `role.view`, `role.create`, `role.edit`, `role.delete` |
+| **Settings** | `settings.view`, `settings.edit` |
+| **Dashboard** | `dashboard.admin`, `dashboard.member` |
+| **Profile** | `profile.view`, `profile.edit` |
+| **Sessions** | `sessions.view`, `sessions.revoke` |
+| **Components** | `components.view` |
+
+### Using in Controllers
+
+```php
+// Check role
+if ($user->hasRole('admin')) {
+    // User is admin
+}
+
+// Check permission
+if ($user->can('user.create')) {
+    // User can create users
+}
+
+// Middleware
+Route::middleware(['role:admin'])->group(function () {
+    // Admin only routes
+});
+
+Route::middleware(['permission:user.view'])->group(function () {
+    // Routes for users with user.view permission
+});
+```
+
+### Using in Svelte Components
+
+```svelte
+<script>
+    import { page } from '@inertiajs/svelte';
+    
+    let user = $derived($page.props.auth?.user);
+    let canCreateUser = $derived(user?.permissions?.includes('user.create'));
+    let isAdmin = $derived(user?.roles?.includes('admin'));
+</script>
+
+{#if canCreateUser}
+    <Button>Create User</Button>
+{/if}
+
+{#if isAdmin}
+    <AdminPanel />
+{/if}
+```
+
+### Adding New Permissions
+
+1. Add permission di `RolePermissionSeeder.php`:
+```php
+$permissions = [
+    // ... existing permissions
+    'report.view',
+    'report.export',
+];
+```
+
+2. Assign ke role:
+```php
+$admin->givePermissionTo(['report.view', 'report.export']);
+```
+
+3. Re-run seeder:
+```bash
+php artisan migrate:fresh --seed
 ```
 
 ## 📁 Project Structure
@@ -530,7 +623,7 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 ## 👨‍💻 Author
 
-Created with ❤️ by [Your Name](https://github.com/RobithYusuf)
+Created with ❤️ by [robithdev](https://github.com/RobithYusuf)
 
 ---
 
