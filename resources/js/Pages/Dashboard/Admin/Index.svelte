@@ -3,15 +3,19 @@
     import DashboardLayout from '@/Components/Layouts/DashboardLayout.svelte';
     import UserAvatar from '@/Components/UI/UserAvatar.svelte';
     
-    export let stats = {
-        total_users: 0,
-        total_admins: 0,
-        total_members: 0,
-        active_users: 0
-    };
-    export let recent_users = [];
+    // Svelte 5: Using $props()
+    let { 
+        stats = {
+            total_users: 0,
+            total_admins: 0,
+            total_members: 0,
+            active_users: 0
+        },
+        recent_users = []
+    } = $props();
     
-    const statCards = [
+    // Svelte 5: Using $derived for computed values
+    let statCards = $derived([
         {
             title: 'Total Users',
             value: stats.total_users,
@@ -44,7 +48,7 @@
             change: '-2%',
             trend: 'down'
         }
-    ];
+    ]);
     
     // Generate random data for charts
     const generateActivityData = () => {
@@ -59,18 +63,21 @@
     const maxValue = Math.max(...activityData.map(d => d.value));
     
     // Pie chart data based on user stats
-    const pieData = [
+    let pieData = $derived([
         { label: 'Admins', value: stats.total_admins, color: '#10b981' },
         { label: 'Members', value: stats.total_members, color: '#8b5cf6' }
-    ];
-    const total = pieData.reduce((sum, item) => sum + item.value, 0) || 1;
+    ]);
     
-    let cumulativeAngle = -90; // Start from top
-    const pieSlices = pieData.map(item => {
-        const angle = (item.value / total) * 360;
-        const startAngle = cumulativeAngle;
-        cumulativeAngle += angle;
-        return { ...item, startAngle, angle };
+    let total = $derived(pieData.reduce((sum, item) => sum + item.value, 0) || 1);
+    
+    let pieSlices = $derived.by(() => {
+        let cumulativeAngle = -90;
+        return pieData.map(item => {
+            const angle = (item.value / total) * 360;
+            const startAngle = cumulativeAngle;
+            cumulativeAngle += angle;
+            return { ...item, startAngle, angle };
+        });
     });
     
     const colorClasses = {
@@ -158,8 +165,8 @@
                                 fill="var(--theme-primary-500)" 
                                 rx="4"
                                 class="transition-all duration-300"
-                                on:mouseenter={(e) => e.target.setAttribute('fill', 'var(--theme-primary-600)')}
-                                on:mouseleave={(e) => e.target.setAttribute('fill', 'var(--theme-primary-500)')}
+                                onmouseenter={(e) => e.target.setAttribute('fill', 'var(--theme-primary-600)')}
+                                onmouseleave={(e) => e.target.setAttribute('fill', 'var(--theme-primary-500)')}
                             />
                             <text 
                                 x="{75 + i * 45}" 

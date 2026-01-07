@@ -2,10 +2,7 @@
     import { formatNumber, formatCurrency } from '@/Utils/formatters';
     import UserAvatar from '@/Components/UI/UserAvatar.svelte';
     
-    export let value;
-    export let type = 'text';
-    export let row = {};
-    export let badgeVariants = {};
+    let { value, type = 'text', row = {}, badgeVariants = {} } = $props();
     
     function formatDate(date) {
         if (!date) return '-';

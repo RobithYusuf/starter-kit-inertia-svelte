@@ -1,28 +1,28 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
     import { fade, scale } from 'svelte/transition';
     
-    export let id = '';
-    export let name = '';
-    export let value = '';
-    export let label = '';
-    export let placeholder = 'Select an option';
-    export let options = [];
-    export let error = '';
-    export let required = false;
-    export let disabled = false;
+    let { 
+        id = '', 
+        name = '', 
+        value = $bindable(''), 
+        label = '', 
+        placeholder = 'Select an option', 
+        options = [], 
+        error = '', 
+        required = false, 
+        disabled = false 
+    } = $props();
     
-    // Generate unique ID if not provided
-    $: selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
-    $: selectName = name || selectId;
+    let selectId = $derived(id || `select-${Math.random().toString(36).substr(2, 9)}`);
+    let selectName = $derived(name || selectId);
     
-    let isOpen = false;
-    let dropdownRef;
-    let buttonRef;
-    let dropdownPosition = 'bottom';
+    let isOpen = $state(false);
+    let dropdownRef = $state(null);
+    let buttonRef = $state(null);
+    let dropdownPosition = $state('bottom');
     
-    $: selectedOption = options.find(opt => opt.value === value);
-    $: selectedLabel = selectedOption ? selectedOption.label : value || placeholder;
+    let selectedOption = $derived(options.find(opt => opt.value === value));
+    let selectedLabel = $derived(selectedOption ? selectedOption.label : value || placeholder);
     
     function toggleDropdown() {
         if (!disabled) {
@@ -55,12 +55,11 @@
         }
     }
     
-    onMount(() => {
+    $effect(() => {
         document.addEventListener('click', handleClickOutside);
-    });
-    
-    onDestroy(() => {
-        document.removeEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
 </script>
 
@@ -79,7 +78,7 @@
             bind:this={buttonRef}
             type="button"
             {id}
-            on:click={toggleDropdown}
+            onclick={toggleDropdown}
             class="w-full px-3 py-2 pr-10 border rounded-lg text-left transition-all duration-200
                    focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
                    {error ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}
@@ -107,7 +106,7 @@
                 <ul class="max-h-60 rounded-md py-1 overflow-auto focus:outline-none">
                     {#each options as option}
                         <li
-                            on:click={() => selectOption(option)}
+                            onclick={() => selectOption(option)}
                             class="relative cursor-pointer select-none py-2 pl-3 pr-9 text-sm transition-colors {value === option.value ? 'bg-primary-50 text-primary-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}"
                         >
                             <span class="block truncate {value === option.value ? 'font-medium' : 'font-normal'}">{option.label}</span>

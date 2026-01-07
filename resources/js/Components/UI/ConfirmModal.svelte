@@ -1,38 +1,57 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
     import { fade, scale } from 'svelte/transition';
+    import { portal } from '@/Utils/portal.js';
     import Button from './Button.svelte';
     
-    export let show = false;
-    export let title = 'Confirm';
-    export let message = 'Are you sure?';
-    export let confirmLabel = 'Confirm';
-    export let cancelLabel = 'Cancel';
-    export let confirmType = 'primary';
-    export let isLoading = false;
-    
-    const dispatch = createEventDispatcher();
+    // Svelte 5: Using $props()
+    let { 
+        show = false,
+        title = 'Confirm',
+        message = 'Are you sure?',
+        confirmLabel = 'Confirm',
+        cancelLabel = 'Cancel',
+        confirmType = 'primary',
+        isLoading = false,
+        oncancel = null,
+        onconfirm = null
+    } = $props();
     
     function handleCancel() {
-        dispatch('cancel');
+        if (oncancel) oncancel();
     }
     
     function handleConfirm() {
-        dispatch('confirm');
+        if (onconfirm) onconfirm();
     }
+    
+    // Lock body scroll when modal is open
+    $effect(() => {
+        if (show) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        
+        return () => {
+            document.body.style.overflow = '';
+        };
+    });
 </script>
 
 {#if show}
-    <!-- Backdrop -->
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Background overlay -->
-            <div 
-                transition:fade={{ duration: 300 }}
-                class="fixed inset-0 bg-gray-500/75 transition-opacity"
-                on:click={handleCancel}
-                aria-hidden="true"
-            ></div>
+    <!-- Portal: teleport modal to document.body to escape stacking context -->
+    <div use:portal class="modal-portal">
+        <div class="fixed inset-0 z-[9998] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Background overlay -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div 
+                    transition:fade={{ duration: 300 }}
+                    class="fixed inset-0 bg-black/50 transition-opacity"
+                    onclick={handleCancel}
+                    aria-hidden="true"
+                ></div>
 
             <!-- This element is to trick the browser into centering the modal contents. -->
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -67,7 +86,7 @@
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
                     <Button
                         variant={confirmType}
-                        on:click={handleConfirm}
+                        onclick={handleConfirm}
                         disabled={isLoading}
                         loading={isLoading}
                         class="w-full sm:w-auto"
@@ -76,7 +95,7 @@
                     </Button>
                     <Button
                         variant="secondary"
-                        on:click={handleCancel}
+                        onclick={handleCancel}
                         disabled={isLoading}
                         class="w-full sm:w-auto mt-3 sm:mt-0"
                     >
@@ -86,4 +105,21 @@
             </div>
         </div>
     </div>
+    </div>
 {/if}
+
+<style>
+    .modal-portal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9998;
+        pointer-events: none;
+    }
+    
+    .modal-portal > * {
+        pointer-events: auto;
+    }
+</style>

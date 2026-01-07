@@ -1,17 +1,17 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
     import { formatNumber } from '@/Utils/formatters';
     
-    export let meta = {};
-    export let links = {};
-    
-    const dispatch = createEventDispatcher();
+    let { 
+        meta = {}, 
+        links = {},
+        onpageChange = () => {}
+    } = $props();
     
     function goToPage(page) {
         const pageNum = parseInt(page);
         const currentPage = parseInt(meta.current_page);
         if (pageNum && pageNum !== currentPage) {
-            dispatch('pageChange', pageNum);
+            onpageChange(pageNum);
         }
     }
     
@@ -24,7 +24,6 @@
         const last = parseInt(meta.last_page);
         const pages = [];
         
-        // If 9 or fewer pages, show all
         if (last <= 9) {
             for (let i = 1; i <= last; i++) {
                 pages.push(i);
@@ -32,54 +31,42 @@
             return pages;
         }
         
-        // Complex pagination for more than 9 pages
         const leftSibling = Math.max(current - 2, 1);
         const rightSibling = Math.min(current + 2, last);
         
-        // Should we show left dots?
         const showLeftDots = leftSibling > 3;
-        // Should we show right dots?
         const showRightDots = rightSibling < last - 2;
         
-        // Always show first page
         pages.push(1);
         
-        // Show second page if no left dots needed
         if (!showLeftDots && leftSibling > 2) {
             pages.push(2);
         }
         
-        // Show left dots
         if (showLeftDots) {
             pages.push('...');
         }
         
-        // Show sibling pages
         for (let i = leftSibling; i <= rightSibling; i++) {
-            // Skip if it's the first or last page (already added)
             if (i > 1 && i < last) {
                 pages.push(i);
             }
         }
         
-        // Show right dots
         if (showRightDots) {
             pages.push('...');
         }
         
-        // Show second to last page if no right dots needed
         if (!showRightDots && rightSibling < last - 1) {
             pages.push(last - 1);
         }
         
-        // Always show last page
         pages.push(last);
         
         return pages;
     }
     
-    // Force reactivity when meta changes
-    $: pages = meta && generatePageNumbers();
+    let pages = $derived(meta && generatePageNumbers());
 </script>
 
 {#if meta && meta.total > 0}
@@ -91,11 +78,10 @@
     </div>
     
     {#if meta.last_page > 1}
-        {#key meta.current_page}
         <nav class="flex items-center space-x-1">
             <!-- Previous -->
             <button
-                on:click={() => goToPage(parseInt(meta.current_page) - 1)}
+                onclick={() => goToPage(parseInt(meta.current_page) - 1)}
                 disabled={parseInt(meta.current_page) === 1}
                 class="px-2.5 py-1.5 text-sm font-medium rounded-md transition-all
                        {parseInt(meta.current_page) === 1 
@@ -111,7 +97,7 @@
                     <span class="px-2 py-1 text-sm text-gray-400">...</span>
                 {:else}
                     <button
-                        on:click={() => goToPage(page)}
+                        onclick={() => goToPage(page)}
                         class="min-w-[36px] px-3 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer
                                {parseInt(page) === parseInt(meta.current_page) 
                                 ? 'text-white shadow-sm' 
@@ -125,7 +111,7 @@
             
             <!-- Next -->
             <button
-                on:click={() => goToPage(parseInt(meta.current_page) + 1)}
+                onclick={() => goToPage(parseInt(meta.current_page) + 1)}
                 disabled={parseInt(meta.current_page) === parseInt(meta.last_page)}
                 class="px-2.5 py-1.5 text-sm font-medium rounded-md transition-all
                        {parseInt(meta.current_page) === parseInt(meta.last_page) 
@@ -135,7 +121,6 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
         </nav>
-        {/key}
     {/if}
 </div>
 {/if}

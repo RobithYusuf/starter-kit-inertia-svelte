@@ -1,34 +1,36 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
     import { Link } from '@inertiajs/svelte';
     
-    export let itemId;
-    export let editRoute = '';
-    export let actionLabels = { edit: 'Edit', delete: 'Delete', view: 'View' };
-    export let canEdit = true;
-    export let canDelete = true;
-    export let canView = false;
-    export let customActions = []; // Array of { icon, label, color, event }
-    
-    const dispatch = createEventDispatcher();
+    let { 
+        itemId, 
+        editRoute = '', 
+        actionLabels = { edit: 'Edit', delete: 'Delete', view: 'View' }, 
+        canEdit = true, 
+        canDelete = true, 
+        canView = false, 
+        customActions = [],
+        ondelete = () => {},
+        onview = () => {},
+        oncustom = () => {}
+    } = $props();
     
     function handleDelete() {
-        dispatch('delete');
+        ondelete();
     }
     
     function handleView() {
-        dispatch('view');
+        onview();
     }
     
     function handleCustomAction(event) {
-        dispatch('custom', event);
+        oncustom(event);
     }
 </script>
 
 <div class="flex items-center justify-end space-x-2">
     {#if canView}
         <button
-            on:click={handleView}
+            onclick={handleView}
             class="inline-flex items-center justify-center w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
             style="color: var(--theme-primary-600)"
             title={actionLabels.view}
@@ -49,7 +51,7 @@
     
     {#each customActions as action}
         <button
-            on:click={() => handleCustomAction(action.event)}
+            onclick={() => handleCustomAction(action.event)}
             class="inline-flex items-center justify-center w-8 h-8 bg-{action.color || 'gray'}-50 hover:bg-{action.color || 'gray'}-100 rounded-lg transition-colors"
             style={action.color ? `color: var(--color-${action.color}-600)` : ''}
             title={action.label}
@@ -60,7 +62,7 @@
     
     {#if canDelete}
         <button
-            on:click={handleDelete}
+            onclick={handleDelete}
             class="inline-flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
             title={actionLabels.delete}
         >

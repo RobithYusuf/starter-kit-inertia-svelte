@@ -1,19 +1,21 @@
 <script>
-    export let id = '';
-    export let name = '';
-    export let type = 'text';
-    export let value = '';
-    export let label = '';
-    export let placeholder = '';
-    export let icon = '';
-    export let error = '';
-    export let required = false;
-    export let disabled = false;
-    export let readonly = false;
+    let { 
+        id = '', 
+        name = '', 
+        type = 'text', 
+        value = $bindable(''), 
+        label = '', 
+        placeholder = '', 
+        icon = '', 
+        error = '', 
+        required = false, 
+        disabled = false, 
+        readonly = false,
+        ...restProps
+    } = $props();
     
-    // Generate unique ID if not provided
-    $: inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
-    $: inputName = name || inputId;
+    let inputId = $derived(id || `input-${Math.random().toString(36).substr(2, 9)}`);
+    let inputName = $derived(name || inputId);
 </script>
 
 <div>
@@ -47,19 +49,19 @@
                    {error ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'}
                    {disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
                    {readonly ? 'bg-gray-50' : ''}"
-            on:focus={(e) => {
+            onfocus={(e) => {
                 if (!error) {
                     e.currentTarget.style.borderColor = 'var(--theme-primary-500)';
                     e.currentTarget.style.boxShadow = '0 0 0 3px var(--theme-primary-500)33';
                 }
             }}
-            on:blur={(e) => {
+            onblur={(e) => {
                 if (!error) {
                     e.currentTarget.style.borderColor = '#d1d5db';
                 }
                 e.currentTarget.style.boxShadow = '';
             }}
-            {...$$restProps}
+            {...restProps}
         />
     </div>
     

@@ -1,6 +1,5 @@
 <script>
     import { Link, useForm, router } from '@inertiajs/svelte';
-    import { onMount } from 'svelte';
     import DashboardLayout from '@/Components/Layouts/DashboardLayout.svelte';
     import PageHeader from '@/Components/Dashboard/PageHeader.svelte';
     import DataTable from '@/Components/Dashboard/DataTable/DataTable.svelte';
@@ -11,32 +10,35 @@
     import Dropdown from '@/Components/UI/Form/Dropdown.svelte';
     import UserAvatar from '@/Components/UI/UserAvatar.svelte';
     import Card from '@/Components/UI/Card.svelte';
-    import alert from '@/Stores/alertStore';
+    import { alertStore } from '@/Stores/alertStore.svelte.js';
     
-    export let users;
-    export let filters = {
-        search: '',
-        role: '',
-        sort_field: 'created_at',
-        sort_order: 'desc',
-        page: 1,
-        per_page: 10,
-    };
+    // Svelte 5: Using $props()
+    let { 
+        users,
+        filters = {
+            search: '',
+            role: '',
+            sort_field: 'created_at',
+            sort_order: 'desc',
+            page: 1,
+            per_page: 10,
+        }
+    } = $props();
     
-    let confirmDelete = false;
-    let userToDelete = null;
-    let isProcessing = false;
-    let isLoading = false;
+    let confirmDelete = $state(false);
+    let userToDelete = $state(null);
+    let isProcessing = $state(false);
+    let isLoading = $state(false);
     let debounceTimeout;
-    let initialLoadComplete = false;
+    let initialLoadComplete = $state(false);
     
     // Modal states
-    let showUserModal = false;
-    let selectedUser = null;
+    let showUserModal = $state(false);
+    let selectedUser = $state(null);
     
     // Track previous values
-    let prevSearch = '';
-    let prevRole = '';
+    let prevSearch = $state('');
+    let prevRole = $state('');
     
     const searchForm = useForm({
         search: filters.search || '',
@@ -48,7 +50,7 @@
     });
     
     // Process users data - Laravel sends pagination data at root level
-    $: processedUsers = {
+    let processedUsers = $derived({
         data: users?.data || [],
         meta: users ? {
             current_page: users.current_page,
@@ -59,16 +61,16 @@
             total: users.total
         } : {},
         links: users?.links || []
-    };
+    });
     
     
     // Add index numbers to users
-    $: indexedUsers = processedUsers?.data?.length > 0 && processedUsers.meta?.current_page
+    let indexedUsers = $derived(processedUsers?.data?.length > 0 && processedUsers.meta?.current_page
         ? processedUsers.data.map((user, index) => {
             const startNumber = (processedUsers.meta.current_page - 1) * processedUsers.meta.per_page || 0;
             return { ...user, index: startNumber + index + 1 };
           })
-        : [];
+        : []);
     
     
     const columns = [
@@ -139,8 +141,8 @@
         }
     ];
     
-    // Handle search with debounce
-    $: {
+    // Handle search with debounce - using $effect
+    $effect(() => {
         if (initialLoadComplete && ($searchForm.search !== prevSearch || $searchForm.role !== prevRole)) {
             clearTimeout(debounceTimeout);
             isLoading = true;
@@ -151,7 +153,7 @@
                 prevRole = $searchForm.role;
             }, 500);
         }
-    }
+    });
     
     function handleSearch() {
         $searchForm.get(route('admin.users.index'), {
@@ -163,8 +165,8 @@
         });
     }
     
-    function handleSort(event) {
-        const { field, order } = event.detail;
+    function handleSort(data) {
+        const { field, order } = data;
         $searchForm.sort_field = field;
         $searchForm.sort_order = order;
         // Mempertahankan halaman saat ini
@@ -172,8 +174,7 @@
         handleSearch();
     }
     
-    function goToPage(event) {
-        const pageNumber = event.detail;
+    function goToPage(pageNumber) {
         $searchForm.page = pageNumber;
         isLoading = true;
         $searchForm.get(route('admin.users.index'), {
@@ -192,16 +193,14 @@
         });
     }
     
-    function handlePerPageChange(event) {
-        const newPerPage = event.detail;
+    function handlePerPageChange(newPerPage) {
         $searchForm.per_page = newPerPage;
         $searchForm.page = 1; // Reset to first page when changing per page
         isLoading = true;
         handleSearch();
     }
     
-    function confirmDeleteUser(event) {
-        const userId = event.detail;
+    function confirmDeleteUser(userId) {
         userToDelete = indexedUsers.find(user => user.id === userId);
         if (userToDelete) {
             confirmDelete = true;
@@ -213,12 +212,12 @@
             isProcessing = true;
             router.delete(route('admin.users.destroy', userToDelete.id), {
                 onSuccess: () => {
-                    alert.success(`User ${userToDelete.name} has been deleted`);
+                    alertStore.success(`User ${userToDelete.name} has been deleted`);
                     confirmDelete = false;
                     userToDelete = null;
                 },
                 onError: (errors) => {
-                    alert.error(`Failed to delete user: ${errors.message || 'An error occurred'}`);
+                    alertStore.error(`Failed to delete user: ${errors.message || 'An error occurred'}`);
                 },
                 onFinish: () => {
                     isProcessing = false;
@@ -228,15 +227,15 @@
         }
     }
     
-    function handleViewUser(event) {
-        const userId = event.detail;
+    function handleViewUser(userId) {
         selectedUser = indexedUsers.find(user => user.id === userId);
         if (selectedUser) {
             showUserModal = true;
         }
     }
     
-    onMount(() => {
+    // Initialize on mount
+    $effect(() => {
         // Set initial values without triggering reactivity
         prevSearch = filters.search || '';
         prevRole = filters.role || '';
@@ -302,11 +301,11 @@
             currentSortField={$searchForm.sort_field}
             currentSortOrder={$searchForm.sort_order}
             perPage={$searchForm.per_page}
-            on:sort={handleSort}
-            on:delete={confirmDeleteUser}
-            on:view={handleViewUser}
-            on:page={goToPage}
-            on:perPageChange={handlePerPageChange}
+            onsort={handleSort}
+            ondelete={confirmDeleteUser}
+            onview={handleViewUser}
+            onpage={goToPage}
+            onperPageChange={handlePerPageChange}
             actionLabels={{ edit: 'Edit User', delete: 'Delete User', view: 'View User Details' }}
         />
     </Card>
@@ -320,8 +319,8 @@
         cancelLabel="Cancel"
         confirmType="danger"
         isLoading={isProcessing}
-        on:confirm={doDelete}
-        on:cancel={() => (confirmDelete = false)}
+        onconfirm={doDelete}
+        oncancel={() => (confirmDelete = false)}
     />
     
     <!-- User Details Modal -->
@@ -329,7 +328,7 @@
         show={showUserModal}
         title="User Details"
         size="lg"
-        on:close={() => (showUserModal = false)}
+        onclose={() => (showUserModal = false)}
     >
         {#if selectedUser}
             <div class="space-y-6">
@@ -412,7 +411,7 @@
             </div>
         {/if}
         
-        <div slot="footer">
+        {#snippet footer()}
             <Button 
                 href="/admin/users/{selectedUser?.id}/edit"
                 variant="primary"
@@ -422,11 +421,11 @@
             </Button>
             <Button 
                 variant="secondary"
-                on:click={() => (showUserModal = false)}
+                onclick={() => (showUserModal = false)}
             >
                 Close
             </Button>
-        </div>
+        {/snippet}
     </Modal>
 </DashboardLayout>
 

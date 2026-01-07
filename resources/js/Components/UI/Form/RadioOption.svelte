@@ -1,25 +1,25 @@
 <script>
-    export let id;
-    export let name;
-    export let value;
-    export let groupValue;
-    export let title = '';
-    export let description = '';
-    export let icon = null;
-    export let variant = 'default';
-    export let disabled = false;
+    let { 
+        id, 
+        name, 
+        value, 
+        groupValue = $bindable(), 
+        title = '', 
+        description = '', 
+        icon = null, 
+        variant = 'default', 
+        disabled = false 
+    } = $props();
     
-    $: checked = groupValue === value;
+    let checked = $derived(groupValue === value);
     
-    // Handle selection
     function handleClick() {
         if (!disabled) {
             groupValue = value;
         }
     }
     
-    // Get colors based on variant
-    $: colors = (() => {
+    let colors = $derived.by(() => {
         const colorMap = {
             default: {
                 border: checked ? 'var(--theme-primary-600)' : '#e5e7eb',
@@ -41,7 +41,7 @@
             }
         };
         return colorMap[variant] || colorMap.default;
-    })();
+    });
 </script>
 
 <label 

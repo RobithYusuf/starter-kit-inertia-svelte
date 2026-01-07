@@ -1,26 +1,23 @@
 <script>
-    import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+    let { 
+        value = $bindable(''), 
+        options = [], 
+        placeholder = 'Select...', 
+        disabled = false,
+        onchange = () => {}
+    } = $props();
     
-    export let value = '';
-    export let options = [];
-    export let placeholder = 'Select...';
-    export let disabled = false;
+    let isOpen = $state(false);
+    let dropdownRef = $state(null);
+    let buttonRef = $state(null);
+    let dropdownPosition = $state('bottom');
     
-    const dispatch = createEventDispatcher();
-    
-    let isOpen = false;
-    let selectedLabel = '';
-    let dropdownRef;
-    let buttonRef;
-    let dropdownPosition = 'bottom';
-    
-    $: selectedOption = options.find(opt => opt.value === value);
-    $: selectedLabel = selectedOption ? selectedOption.label : value;
+    let selectedOption = $derived(options.find(opt => opt.value === value));
+    let selectedLabel = $derived(selectedOption ? selectedOption.label : value);
     
     function toggleDropdown() {
         if (!disabled) {
             if (!isOpen) {
-                // Check position before opening
                 checkDropdownPosition();
             }
             isOpen = !isOpen;
@@ -32,7 +29,7 @@
             const rect = buttonRef.getBoundingClientRect();
             const spaceBelow = window.innerHeight - rect.bottom;
             const spaceAbove = rect.top;
-            const dropdownHeight = Math.min(options.length * 40, 240); // Estimate height
+            const dropdownHeight = Math.min(options.length * 40, 240);
             
             dropdownPosition = spaceBelow < dropdownHeight && spaceAbove > spaceBelow ? 'top' : 'bottom';
         }
@@ -41,7 +38,7 @@
     function selectOption(option) {
         value = option.value;
         isOpen = false;
-        dispatch('change', option.value);
+        onchange(option.value);
     }
     
     function handleClickOutside(event) {
@@ -50,12 +47,11 @@
         }
     }
     
-    onMount(() => {
+    $effect(() => {
         document.addEventListener('click', handleClickOutside);
-    });
-    
-    onDestroy(() => {
-        document.removeEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
 </script>
 
@@ -63,7 +59,7 @@
     <button
         bind:this={buttonRef}
         type="button"
-        on:click={toggleDropdown}
+        onclick={toggleDropdown}
         class="relative w-full rounded-lg border border-gray-300 bg-white pl-3 pr-8 py-2 text-left text-sm text-gray-700 transition-all hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:ring-opacity-50 {disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
         {disabled}
     >
@@ -80,7 +76,7 @@
             <ul class="max-h-60 rounded-md py-1 overflow-auto focus:outline-none">
                 {#each options as option}
                     <li
-                        on:click={() => selectOption(option)}
+                        onclick={() => selectOption(option)}
                         class="relative cursor-pointer select-none py-2 pl-3 pr-9 text-sm transition-colors {value === option.value ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}"
                     >
                         <span class="block truncate {value === option.value ? 'font-medium' : 'font-normal'}">{option.label}</span>
@@ -99,7 +95,6 @@
 </div>
 
 <style>
-    /* Smooth rotation animation for chevron */
     svg {
         transition: transform 0.2s ease-in-out;
     }

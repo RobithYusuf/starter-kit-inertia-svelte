@@ -30,7 +30,7 @@
     <FormError errors={$form.errors} />
     
     <!-- Form -->
-    <form on:submit|preventDefault={submit} class="space-y-5">
+    <form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-5">
         <!-- Name Field -->
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -46,13 +46,13 @@
                     bind:value={$form.name}
                     placeholder="John Doe"
                     class="w-full pl-10 pr-4 py-1.5 border border-gray-300 rounded-lg transition-all duration-200 focus:outline-none hover:border-gray-400 {$form.errors.name ? 'border-red-500 bg-red-50' : ''}"
-                    on:focus={(e) => {
+                    onfocus={(e) => {
                         if (!$form.errors.name) {
                             e.currentTarget.style.borderColor = 'var(--theme-primary-500)';
                             e.currentTarget.style.boxShadow = '0 0 0 3px var(--theme-primary-500)33';
                         }
                     }}
-                    on:blur={(e) => {
+                    onblur={(e) => {
                         if (!$form.errors.name) {
                             e.currentTarget.style.borderColor = '#d1d5db';
                         }
@@ -118,14 +118,10 @@
             />
             <label for="terms" class="ml-2 text-sm text-gray-700">
                 I agree to the 
-                <a href="#" class="font-medium transition-colors"
-                   style="color: var(--theme-primary-600)"
-                   on:mouseenter={(e) => e.currentTarget.style.color = 'var(--theme-primary-700)'}
-                   on:mouseleave={(e) => e.currentTarget.style.color = 'var(--theme-primary-600)'}>Terms</a> and 
-                <a href="#" class="font-medium transition-colors"
-                   style="color: var(--theme-primary-600)"
-                   on:mouseenter={(e) => e.currentTarget.style.color = 'var(--theme-primary-700)'}
-                   on:mouseleave={(e) => e.currentTarget.style.color = 'var(--theme-primary-600)'}>Privacy Policy</a>
+                <a href="#" class="font-medium transition-colors hover:opacity-80"
+                   style="color: var(--theme-primary-600)">Terms</a> and 
+                <a href="#" class="font-medium transition-colors hover:opacity-80"
+                   style="color: var(--theme-primary-600)">Privacy Policy</a>
             </label>
         </div>
         
@@ -149,10 +145,8 @@
     <div class="mt-8 pt-6 border-t border-gray-100 text-center">
         <p class="text-sm text-gray-600">
             Already have an account?
-            <Link href="/login" class="font-medium transition-colors"
-                  style="color: var(--theme-primary-600)"
-                  on:mouseenter={(e) => e.currentTarget.style.color = 'var(--theme-primary-700)'}
-                  on:mouseleave={(e) => e.currentTarget.style.color = 'var(--theme-primary-600)'}>
+            <Link href="/login" class="font-medium transition-colors hover:opacity-80"
+                  style="color: var(--theme-primary-600)">
                 Sign in instead
             </Link>
         </p>

@@ -1,12 +1,12 @@
 # 🚀 Laravel Inertia Svelte Starter Kit
 
-Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js**, dan **Svelte 5**. Dilengkapi dengan authentication, dashboard, user management, dan theme system.
+Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js v2**, dan **Svelte 5** (Runes). Dilengkapi dengan authentication, dashboard, user management, component library, dan theme system.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
-  <img src="https://img.shields.io/badge/Svelte-5.x-FF3E00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte">
-  <img src="https://img.shields.io/badge/Inertia.js-1.x-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
+  <img src="https://img.shields.io/badge/Svelte-5.46-FF3E00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte">
+  <img src="https://img.shields.io/badge/Inertia.js-2.3-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
 </p>
 
 ## 📋 Table of Contents
@@ -26,7 +26,8 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 
 ### 🔐 Authentication & Authorization
 - Login, Register, Forgot Password, Reset Password
-- Email verification ready
+- Email verification (optional, configurable)
+- Session management (view & revoke active sessions)
 - Role-based access control (Admin & Member)
 - Protected routes dengan middleware
 - Pesan error yang informatif (email tidak ditemukan, password salah, akun dinonaktifkan)
@@ -39,16 +40,23 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 
 ### 🎨 UI/UX Features
 - **5 Theme Colors**: Orange (default), Blue, Emerald, Purple, Slate
+- **Customizable Alert Position**: 6 positions (top/bottom, left/center/right)
 - **Responsive Design**: Mobile-first approach
 - **Dark Mode Ready**: Struktur sudah disiapkan
-- **Toast Notifications**: Success, error, info alerts
+- **Toast Notifications**: Success, error, info, warning alerts
 - **Loading States**: Skeleton loader & spinner
 - **Empty States**: Informative placeholder
 
+### 🧩 Component Library (40+ Components)
+- **UI Components**: Button, Card, Modal, Badge, Avatar, Tabs, Accordion, Tooltip, Progress, Spinner, Skeleton, EmptyState, Breadcrumb, Dropdown
+- **Form Components**: TextInput, Select, MultiSelect, DatePicker, DateRangePicker, FileUpload, TagInput, RangeSlider, Toggle, Checkbox
+- **Layout Components**: DashboardLayout, AuthLayout, GuestLayout, Sidebar
+- **Component Showcase**: Interactive documentation at `/admin/components`
+
 ### 🛠️ Developer Experience
+- **Svelte 5 Runes**: Full migration to $state, $derived, $effect, $props
 - **Hot Module Replacement**: Instant preview
 - **TypeScript Ready**: Dapat ditambahkan
-- **Component Library**: 30+ reusable components
 - **Form Handling**: Terintegrasi dengan Inertia
 - **Validation**: Client & server-side dengan pesan bahasa Indonesia
 - **SEO Friendly**: Meta tags management
@@ -268,25 +276,50 @@ Route::middleware(['auth'])->group(function () {
 
 ## 🧩 Components
 
-Starter kit menyediakan 30+ komponen siap pakai:
+Starter kit menyediakan 40+ komponen siap pakai dengan Svelte 5 Runes syntax:
 
 ### UI Components
-- `Button` - Tombol dengan berbagai varian
-- `Card` - Container dengan shadow
-- `Modal` - Dialog/popup
-- `Alert` - Notifikasi toast
-- `EmptyState` - Placeholder kosong
-- `Pagination` - Navigasi halaman
-- Dan lainnya...
+| Component | Description |
+|-----------|-------------|
+| `Button` | Tombol dengan berbagai varian (primary, secondary, outline, ghost, danger) |
+| `Card` | Container dengan shadow dan padding options |
+| `Modal` | Dialog/popup dengan portal rendering |
+| `ConfirmModal` | Modal konfirmasi dengan callback |
+| `Alert` | Notifikasi inline |
+| `AlertContainer` | Toast notifications dengan 6 posisi |
+| `Badge` | Label/tag dengan berbagai warna |
+| `Avatar` | User avatar dengan fallback initials |
+| `AvatarGroup` | Grouped avatars dengan max display |
+| `Tabs` | Tab navigation |
+| `Accordion` | Collapsible content sections |
+| `Tooltip` | Hover tooltips |
+| `Progress` | Progress bar |
+| `Spinner` | Loading indicator |
+| `Skeleton` | Loading placeholder |
+| `EmptyState` | Empty content placeholder |
+| `Breadcrumb` | Navigation breadcrumbs |
+| `Dropdown` | Dropdown menu |
+| `Pagination` | Page navigation |
 
 ### Form Components
-- `Input` - Text input standard
-- `IconInput` - Input dengan icon
-- `EmailInput` - Khusus email
-- `PasswordInput` - Dengan toggle visibility
-- `RadioOption` - Custom radio button
-- `Dropdown` - Select replacement
-- Dan lainnya...
+| Component | Description |
+|-----------|-------------|
+| `TextInput` | Text input dengan label dan error |
+| `Select` | Custom select dropdown |
+| `MultiSelect` | Multi-value select dengan tags |
+| `DatePicker` | Calendar date picker dengan min/max |
+| `DateRangePicker` | Date range selection dengan presets |
+| `FileUpload` | Drag & drop file upload |
+| `TagInput` | Tag/chip input |
+| `RangeSlider` | Numeric range slider |
+| `Toggle` | Toggle switch |
+| `Checkbox` | Custom checkbox |
+| `EmailInput` | Email input dengan validasi |
+| `PasswordInput` | Password dengan visibility toggle |
+| `IconInput` | Input dengan icon |
+
+### Component Showcase
+Lihat semua komponen secara interaktif di `/admin/components` setelah login sebagai admin.
 
 Dokumentasi lengkap: [Components README](resources/js/Components/README.md)
 
@@ -301,7 +334,7 @@ Dokumentasi lengkap: [Components README](resources/js/Components/README.md)
 
 2. Menambah theme baru:
 ```javascript
-// resources/js/Stores/themeStore.js
+// resources/js/Stores/themeStore.svelte.js
 export const presetThemes = {
     // Theme baru
     indigo: {

@@ -1,18 +1,22 @@
 <script>
-    export let errors = {};
-    export let title = 'Please fix the following errors';
-    export let singleError = '';
-    export let message = ''; // For single message display
-    export let className = '';
+    let { 
+        errors = {}, 
+        title = 'Please fix the following errors', 
+        singleError = '', 
+        message = '',
+        className = '' 
+    } = $props();
     
-    $: hasErrors = message || singleError || (errors && Object.keys(errors).length > 0);
-    $: errorList = message 
-        ? [message]
-        : singleError 
-        ? [singleError] 
-        : Object.values(errors)
-            .flat() // Flatten arrays in case of multiple errors per field
-            .filter(Boolean);
+    let hasErrors = $derived(message || singleError || (errors && Object.keys(errors).length > 0));
+    let errorList = $derived(
+        message 
+            ? [message]
+            : singleError 
+            ? [singleError] 
+            : Object.values(errors)
+                .flat()
+                .filter(Boolean)
+    );
 </script>
 
 {#if hasErrors}

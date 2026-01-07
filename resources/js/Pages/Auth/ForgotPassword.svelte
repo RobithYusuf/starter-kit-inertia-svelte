@@ -5,7 +5,7 @@
     import EmailInput from '@/Components/UI/Form/EmailInput.svelte';
     import FormError from '@/Components/UI/Form/FormError.svelte';
     
-    export let status = '';
+    let { status = '' } = $props();
     
     const form = useForm({
         email: '',
@@ -34,7 +34,7 @@
     <FormError errors={$form.errors} />
     
     <!-- Form -->
-    <form on:submit|preventDefault={submit} class="space-y-5">
+    <form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-5">
         <!-- Email Field -->
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">

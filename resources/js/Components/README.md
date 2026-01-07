@@ -1,876 +1,724 @@
-# 📚 Dokumentasi Komponen Starter Kit
+# UI Components Library
 
-Dokumentasi lengkap untuk semua komponen yang tersedia dalam starter kit Laravel Inertia Svelte.
+This document provides comprehensive documentation for all UI components available in this starter kit.
 
-## 📁 Struktur Direktori
+## Quick Links
 
-```
-Components/
-├── Dashboard/          # Komponen khusus dashboard
-│   ├── DataTable/     # Komponen tabel dengan sorting & pagination
-│   ├── PageHeader.svelte
-│   └── Sidebar.svelte
-├── Layouts/           # Layout halaman
-│   ├── AuthLayout.svelte
-│   ├── DashboardLayout.svelte
-│   └── GuestLayout.svelte
-├── Shared/            # Komponen yang digunakan di seluruh aplikasi
-│   └── Logo.svelte
-├── UI/                # Komponen UI reusable
-│   ├── Form/          # Komponen form
-│   └── ...            # Komponen UI lainnya
-└── Unused/            # Komponen yang tidak terpakai (untuk referensi)
-    ├── StatCard.svelte
-    ├── EmptyState.svelte
-    ├── Input.svelte
-    └── README.md
-```
+- [Preview all components](/admin/components) - Live component showcase page
 
-## 🎨 UI Components
+## Table of Contents
+
+1. [UI Components](#ui-components)
+   - [Button](#button)
+   - [Badge](#badge)
+   - [Spinner](#spinner)
+   - [Skeleton](#skeleton)
+   - [Tooltip](#tooltip)
+   - [Toggle](#toggle)
+   - [Alert](#alert)
+   - [Progress](#progress)
+   - [Avatar](#avatar)
+   - [AvatarGroup](#avatargroup)
+   - [Card](#card)
+   - [CardAdvanced](#cardadvanced)
+   - [StatCard](#statcard)
+   - [EmptyState](#emptystate)
+   - [Modal](#modal)
+   - [ConfirmModal](#confirmmodal)
+   - [Dropdown](#dropdown)
+   - [Tabs](#tabs)
+   - [Accordion](#accordion)
+   - [Breadcrumb](#breadcrumb)
+   - [Pagination](#pagination)
+
+2. [Form Components](#form-components)
+   - [TextInput](#textinput)
+   - [PasswordInput](#passwordinput)
+   - [Textarea](#textarea)
+   - [Select](#select)
+   - [Checkbox](#checkbox)
+   - [RadioOption](#radiooption)
+   - [FileUpload](#fileupload)
+
+---
+
+## UI Components
 
 ### Button
-Komponen button utama dengan berbagai varian dan ukuran. Mendukung loading state, icon, dan dapat berfungsi sebagai link.
+
+A versatile button component with multiple variants, sizes, and states.
 
 ```svelte
 <script>
-import Button from '@/Components/UI/Button.svelte';
+    import Button from '@/Components/UI/Button.svelte';
 </script>
 
-<!-- Primary Button -->
-<Button variant="primary" size="md">
-  Click Me
-</Button>
-
-<!-- Button dengan Loading State -->
-<Button 
-  variant="secondary" 
-  icon="fas fa-save" 
-  loading={isLoading}
-  disabled={isLoading}
->
-  Save
-</Button>
-
-<!-- Button sebagai Link -->
-<Button 
-  href="/dashboard" 
-  variant="ghost" 
-  external
-  icon="fas fa-external-link-alt"
->
-  Dashboard
+<Button variant="primary" size="md" icon="fas fa-plus">
+    Add New
 </Button>
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Tipe button HTML |
-| `variant` | `'primary' \| 'secondary' \| 'success' \| 'danger' \| 'ghost'` | `'primary'` | Style variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Ukuran button |
-| `disabled` | `boolean` | `false` | Disable state |
-| `loading` | `boolean` | `false` | Loading state dengan spinner |
-| `icon` | `string` | `null` | Font Awesome icon class |
-| `iconPosition` | `'left' \| 'right'` | `'left'` | Posisi icon |
-| `href` | `string` | `null` | URL untuk button sebagai link |
-| `external` | `boolean` | `false` | Buka link di tab baru |
+| `variant` | `'primary' \| 'secondary' \| 'success' \| 'danger' \| 'ghost'` | `'primary'` | Button style variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Button size |
+| `icon` | `string` | `null` | FontAwesome icon class |
+| `iconPosition` | `'left' \| 'right'` | `'left'` | Icon position |
+| `loading` | `boolean` | `false` | Show loading spinner |
+| `disabled` | `boolean` | `false` | Disable button |
+| `href` | `string` | `null` | Render as link |
+| `external` | `boolean` | `false` | Open link in new tab |
 
-### Card
-Komponen card untuk membungkus konten dengan customizable styling.
+---
+
+### Badge
+
+Inline status indicators and labels.
 
 ```svelte
-<Card padding="p-6" shadow="shadow-lg" rounded="rounded-xl">
-  <h3 class="text-lg font-semibold mb-2">Card Title</h3>
-  <p class="text-gray-600">Card content goes here...</p>
-</Card>
+<script>
+    import Badge from '@/Components/UI/Badge.svelte';
+</script>
 
-<!-- Card tanpa padding untuk content full-width -->
-<Card padding="">
-  <img src="/image.jpg" class="w-full h-48 object-cover" />
-  <div class="p-4">
-    <h3>Image Card</h3>
-  </div>
-</Card>
+<Badge variant="success">Active</Badge>
+<Badge variant="solid-primary" icon="fas fa-star">Featured</Badge>
+<Badge variant="outline-danger" removable={true}>Tag</Badge>
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `padding` | `string` | `'p-4'` | Tailwind padding class |
-| `margin` | `string` | `''` | Tailwind margin class |
-| `shadow` | `string` | `'shadow-sm'` | Tailwind shadow class |
-| `rounded` | `string` | `'rounded-lg'` | Tailwind rounded class |
-| `border` | `string` | `''` | Tailwind border class |
-| `background` | `string` | `'bg-white'` | Tailwind background class |
-| `className` | `string` | `''` | Additional CSS classes |
+| `variant` | `string` | `'default'` | Badge variant (default, primary, success, warning, danger, info, solid-*, outline-*) |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Badge size |
+| `rounded` | `'none' \| 'sm' \| 'md' \| 'lg' \| 'full'` | `'full'` | Border radius |
+| `icon` | `string` | `null` | Icon class |
+| `removable` | `boolean` | `false` | Show remove button |
+| `onremove` | `function` | `null` | Remove callback |
 
-### UserAvatar
-Menampilkan avatar user dengan gambar atau inisial otomatis.
+---
+
+### Spinner
+
+Loading indicator with customizable size and color.
 
 ```svelte
-<!-- Dengan gambar -->
-<UserAvatar 
-  name="John Doe" 
-  image="/path/to/avatar.jpg"
-  size="lg"
-/>
+<script>
+    import Spinner from '@/Components/UI/Spinner.svelte';
+</script>
 
-<!-- Tanpa gambar (inisial otomatis) -->
-<UserAvatar 
-  name="Jane Smith" 
-  size="md"
-/>
-
-<!-- Dalam list/tabel -->
-<div class="flex items-center space-x-3">
-  <UserAvatar name={user.name} image={user.avatar} size="sm" />
-  <div>
-    <p class="font-medium">{user.name}</p>
-    <p class="text-sm text-gray-500">{user.email}</p>
-  </div>
-</div>
+<Spinner size="md" variant="primary" />
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `name` | `string` | required | Nama user untuk inisial |
-| `image` | `string` | `null` | URL gambar avatar |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Ukuran avatar |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Spinner size |
+| `variant` | `'primary' \| 'secondary' \| 'white' \| 'success' \| 'danger'` | `'primary'` | Color variant |
+| `label` | `string` | `'Loading...'` | Screen reader label |
 
+---
+
+### Skeleton
+
+Placeholder loading states for content.
+
+```svelte
+<script>
+    import Skeleton from '@/Components/UI/Skeleton.svelte';
+</script>
+
+<Skeleton variant="avatar" />
+<Skeleton variant="text" lines={3} />
+<Skeleton variant="image" />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'text' \| 'title' \| 'avatar' \| 'thumbnail' \| 'image' \| 'button' \| 'card'` | `'text'` | Skeleton type |
+| `width` | `string` | `null` | Custom width |
+| `height` | `string` | `null` | Custom height |
+| `lines` | `number` | `1` | Number of text lines |
+| `animate` | `boolean` | `true` | Enable pulse animation |
+
+---
+
+### Tooltip
+
+Hover tooltips for additional context.
+
+```svelte
+<script>
+    import Tooltip from '@/Components/UI/Tooltip.svelte';
+</script>
+
+<Tooltip text="This is helpful info" position="top">
+    <button>Hover me</button>
+</Tooltip>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `string` | `''` | Tooltip content |
+| `position` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Tooltip position |
+| `delay` | `number` | `200` | Show delay in ms |
+
+---
+
+### Toggle
+
+Switch toggle for boolean values.
+
+```svelte
+<script>
+    import Toggle from '@/Components/UI/Toggle.svelte';
+    let enabled = $state(false);
+</script>
+
+<Toggle bind:checked={enabled} label="Enable notifications" />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | `false` | Bindable toggle state |
+| `disabled` | `boolean` | `false` | Disable toggle |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Toggle size |
+| `label` | `string` | `''` | Label text |
+| `labelPosition` | `'left' \| 'right'` | `'right'` | Label position |
+| `onchange` | `function` | `null` | Change callback |
+
+---
+
+### Alert
+
+Contextual alert messages.
+
+```svelte
+<script>
+    import Alert from '@/Components/UI/Alert.svelte';
+</script>
+
+<Alert variant="success" title="Success!" message="Your changes have been saved." dismissible={true} />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'info' \| 'success' \| 'warning' \| 'danger'` | `'info'` | Alert type |
+| `title` | `string` | `''` | Alert title |
+| `message` | `string` | `''` | Alert message |
+| `icon` | `string` | `null` | Custom icon (auto-selected if null) |
+| `dismissible` | `boolean` | `false` | Show close button |
+| `onclose` | `function` | `null` | Close callback |
+
+---
+
+### Progress
+
+Progress bar with multiple variants.
+
+```svelte
+<script>
+    import Progress from '@/Components/UI/Progress.svelte';
+</script>
+
+<Progress value={75} max={100} showLabel={true} />
+<Progress value={50} striped={true} animated={true} />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Current value |
+| `max` | `number` | `100` | Maximum value |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Bar height |
+| `variant` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'primary'` | Color |
+| `showLabel` | `boolean` | `false` | Show percentage label |
+| `label` | `string` | `''` | Custom label |
+| `striped` | `boolean` | `false` | Striped pattern |
+| `animated` | `boolean` | `false` | Animate stripes |
+
+---
+
+### Avatar
+
+User avatar with initials fallback and status indicator.
+
+```svelte
+<script>
+    import Avatar from '@/Components/UI/Avatar.svelte';
+</script>
+
+<Avatar name="John Doe" size="lg" status="online" />
+<Avatar src="/path/to/image.jpg" name="Jane" />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | `null` | Image URL |
+| `name` | `string` | `''` | Name for initials fallback |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'` | `'md'` | Avatar size |
+| `variant` | `'circle' \| 'rounded' \| 'square'` | `'circle'` | Shape |
+| `status` | `'online' \| 'offline' \| 'busy' \| 'away'` | `null` | Status indicator |
+| `showBorder` | `boolean` | `false` | White border ring |
+
+---
+
+### AvatarGroup
+
+Stacked avatar group with overflow count.
+
+```svelte
+<script>
+    import AvatarGroup from '@/Components/UI/AvatarGroup.svelte';
+    
+    const users = [
+        { name: 'John', src: null },
+        { name: 'Jane', src: null },
+        { name: 'Bob', src: null },
+    ];
+</script>
+
+<AvatarGroup avatars={users} max={3} />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `avatars` | `array` | `[]` | Array of {name, src} objects |
+| `max` | `number` | `4` | Maximum visible avatars |
+| `size` | `string` | `'md'` | Avatar size |
+| `spacing` | `'tight' \| 'normal' \| 'loose'` | `'tight'` | Overlap spacing |
+
+---
 
 ### Modal
-Modal umum yang sangat fleksibel untuk berbagai kebutuhan.
+
+Modal dialog with customizable header, body, and footer.
 
 ```svelte
 <script>
-let showModal = false;
-let showFullModal = false;
+    import Modal from '@/Components/UI/Modal.svelte';
+    let show = $state(false);
 </script>
 
-<!-- Basic Modal -->
-<Modal 
-  show={showModal}
-  title="Edit Profile"
-  size="md"
-  on:close={() => showModal = false}
->
-  <form class="space-y-4">
-    <Input label="Name" bind:value={name} />
-    <Input label="Email" bind:value={email} />
-  </form>
-  
-  <div slot="footer">
-    <Button variant="primary" on:click={handleSave}>Save</Button>
-    <Button variant="secondary" on:click={() => showModal = false}>Cancel</Button>
-  </div>
-</Modal>
-
-<!-- Large Scrollable Modal -->
-<Modal 
-  show={showFullModal}
-  title="Terms & Conditions"
-  size="xl"
-  scrollable={true}
-  closeOnClickOutside={false}
-  on:close={() => showFullModal = false}
->
-  <div class="prose max-w-none">
-    <!-- Long content here -->
-  </div>
-</Modal>
-
-<!-- Modal without Header/Footer -->
-<Modal 
-  show={imageModal}
-  showHeader={false}
-  showFooter={false}
-  size="lg"
-  centered={true}
-  on:close={() => imageModal = false}
->
-  <img src="/path/to/image.jpg" class="w-full h-auto" />
+<Modal bind:show title="Edit Profile" size="lg">
+    <p>Modal content here</p>
+    
+    {#snippet footer()}
+        <Button onclick={() => show = false}>Close</Button>
+    {/snippet}
 </Modal>
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `show` | `boolean` | `false` | Show/hide modal |
+| `show` | `boolean` | `false` | Bindable visibility |
 | `title` | `string` | `''` | Modal title |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Modal size |
-| `closeOnEscape` | `boolean` | `true` | Close on ESC key |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Modal width |
+| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
 | `closeOnClickOutside` | `boolean` | `true` | Close on backdrop click |
-| `showClose` | `boolean` | `true` | Show close button |
-| `showFooter` | `boolean` | `true` | Show footer slot |
+| `showClose` | `boolean` | `true` | Show X button |
 | `showHeader` | `boolean` | `true` | Show header |
-| `centered` | `boolean` | `false` | Center modal vertically |
-| `scrollable` | `boolean` | `false` | Make body scrollable |
-| `className` | `string` | `''` | Additional CSS classes |
+| `showFooter` | `boolean` | `true` | Show footer |
+| `onclose` | `function` | `null` | Close callback |
 
-**Events:**
-- `close` - Fired when modal requests to close
-
-**Slots:**
-- `default` - Modal body content
-- `header` - Additional header content (after title)
-- `footer` - Footer content (buttons, etc)
+---
 
 ### ConfirmModal
-Modal konfirmasi untuk aksi berbahaya/penting.
+
+Confirmation dialog for destructive actions.
 
 ```svelte
 <script>
-let showDeleteModal = false;
-let isDeleting = false;
-
-async function handleDelete() {
-  isDeleting = true;
-  try {
-    await deleteUser(userId);
-    showDeleteModal = false;
-  } finally {
-    isDeleting = false;
-  }
-}
+    import ConfirmModal from '@/Components/UI/ConfirmModal.svelte';
+    let show = $state(false);
 </script>
 
 <ConfirmModal 
-  show={showDeleteModal}
-  title="Hapus User"
-  message="Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan."
-  confirmLabel="Hapus"
-  cancelLabel="Batal"
-  confirmType="danger"
-  isLoading={isDeleting}
-  on:confirm={handleDelete}
-  on:cancel={() => showDeleteModal = false}
+    bind:show
+    title="Delete User"
+    message="Are you sure you want to delete this user?"
+    confirmType="danger"
+    onconfirm={() => handleDelete()}
 />
-
-<!-- Trigger -->
-<Button variant="danger" on:click={() => showDeleteModal = true}>
-  Hapus User
-</Button>
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `show` | `boolean` | required | Show/hide modal |
-| `title` | `string` | `'Confirm'` | Modal title |
-| `message` | `string` | `'Are you sure?'` | Pesan konfirmasi (support HTML) |
-| `confirmLabel` | `string` | `'Confirm'` | Label button confirm |
-| `cancelLabel` | `string` | `'Cancel'` | Label button cancel |
-| `confirmType` | `'primary' \| 'danger' \| 'success'` | `'primary'` | Style button confirm |
+| `show` | `boolean` | `false` | Bindable visibility |
+| `title` | `string` | `'Confirm'` | Dialog title |
+| `message` | `string` | `'Are you sure?'` | Confirmation message |
+| `confirmLabel` | `string` | `'Confirm'` | Confirm button text |
+| `cancelLabel` | `string` | `'Cancel'` | Cancel button text |
+| `confirmType` | `string` | `'primary'` | Confirm button variant |
 | `isLoading` | `boolean` | `false` | Loading state |
+| `onconfirm` | `function` | `null` | Confirm callback |
+| `oncancel` | `function` | `null` | Cancel callback |
 
-### Pagination
-Komponen pagination untuk navigasi halaman data.
+---
 
-```svelte
-<Pagination 
-  meta={{
-    current_page: 1,
-    last_page: 10,
-    per_page: 15,
-    total: 150,
-    from: 1,
-    to: 15
-  }}
-/>
+### Tabs
 
-<!-- Dengan data dari Laravel -->
-<Pagination meta={users.meta} />
-```
-
-**Props:**
-| Prop | Type | Description |
-|------|------|-------------|
-| `meta` | `object` | Laravel pagination meta object |
-
-### SelectDropdown
-Custom dropdown select untuk UI non-form dengan animasi dan smart positioning.
-
-```svelte
-<SelectDropdown 
-  value={perPage}
-  options={[
-    { value: '10', label: '10 per halaman' },
-    { value: '25', label: '25 per halaman' },
-    { value: '50', label: '50 per halaman' },
-    { value: '100', label: '100 per halaman' }
-  ]}
-  placeholder="Pilih jumlah"
-  on:change={(e) => {
-    perPage = e.detail;
-    loadData();
-  }}
-/>
-```
-
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | `''` | Selected value |
-| `options` | `Array<{value, label}>` | `[]` | Opsi dropdown |
-| `placeholder` | `string` | `'Select...'` | Placeholder text |
-| `disabled` | `boolean` | `false` | Disable state |
-
-### AlertContainer
-Container untuk menampilkan toast notifications. Biasanya sudah ada di layout.
-
-```svelte
-<!-- Sudah ada di DashboardLayout/AuthLayout -->
-<AlertContainer />
-
-<!-- Penggunaan di komponen -->
-<script>
-import alert from '@/Stores/alertStore';
-
-// Success notification
-alert.success('Data berhasil disimpan!');
-
-// Error notification
-alert.error('Terjadi kesalahan saat menyimpan data');
-
-// Info notification
-alert.info('Perubahan akan diterapkan setelah refresh');
-</script>
-```
-
-## 📝 Form Components
-
-
-### IconInput
-Input dengan icon di sebelah kiri.
-
-```svelte
-<IconInput 
-  label="Email"
-  type="email"
-  icon="fas fa-envelope"
-  bind:value={$form.email}
-  error={$form.errors.email}
-  placeholder="user@example.com"
-  required
-/>
-
-<IconInput 
-  label="Phone"
-  type="tel"
-  icon="fas fa-phone"
-  bind:value={$form.phone}
-  placeholder="+62 812-3456-7890"
-/>
-```
-
-**Props tambahan:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `icon` | `string` | `''` | Font Awesome icon class |
-| `type` | `string` | `'text'` | Input type |
-
-### EmailInput
-Input khusus untuk email dengan icon envelope.
-
-```svelte
-<EmailInput 
-  bind:value={$form.email}
-  error={$form.errors.email}
-  placeholder="your@email.com"
-  required
-/>
-```
-
-### PasswordInput
-Input password dengan toggle visibility dan optional strength indicator.
-
-```svelte
-<!-- Login form -->
-<PasswordInput 
-  bind:value={$form.password}
-  error={$form.errors.password}
-  placeholder="Enter password"
-  autocomplete="current-password"
-/>
-
-<!-- Registration form dengan strength indicator -->
-<PasswordInput 
-  bind:value={$form.password}
-  error={$form.errors.password}
-  showStrength={true}
-  placeholder="Create strong password"
-  autocomplete="new-password"
-/>
-```
-
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `showStrength` | `boolean` | `false` | Tampilkan strength indicator |
-| `autocomplete` | `string` | `'current-password'` | Autocomplete hint |
-
-### RadioOption
-Custom radio button dengan design modern dan support untuk icon.
+Tab navigation component.
 
 ```svelte
 <script>
-let selectedRole = 'admin';
-let selectedStatus = true;
+    import Tabs from '@/Components/UI/Tabs.svelte';
+    let activeTab = $state(0);
+    
+    const tabs = [
+        { label: 'General', icon: 'fas fa-cog' },
+        { label: 'Security', icon: 'fas fa-lock' },
+        { label: 'Notifications', badge: '3' },
+    ];
 </script>
 
-<!-- Role Selection -->
-<div class="space-y-3">
-  <label class="block text-sm font-medium text-gray-700">User Role</label>
-  <div class="grid grid-cols-2 gap-3">
-    <RadioOption 
-      id="role-admin"
-      name="role"
-      value="admin"
-      bind:groupValue={selectedRole}
-      title="Administrator"
-      description="Full system access"
-      icon="fas fa-shield-alt"
-    />
-    <RadioOption 
-      id="role-member"
-      name="role"
-      value="member"
-      bind:groupValue={selectedRole}
-      title="Member"
-      description="Limited access"
-      icon="fas fa-user"
-    />
-  </div>
-</div>
-
-<!-- Status Selection -->
-<div class="grid grid-cols-2 gap-3">
-  <RadioOption 
-    id="status-active"
-    name="status"
-    value={true}
-    bind:groupValue={selectedStatus}
-    title="Active"
-    description="User can login"
-    variant="success"
-  />
-  <RadioOption 
-    id="status-inactive"
-    name="status"
-    value={false}
-    bind:groupValue={selectedStatus}
-    title="Inactive"
-    description="Login disabled"
-    variant="danger"
-  />
-</div>
+<Tabs items={tabs} bind:activeTab variant="pills" />
 ```
 
 **Props:**
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `id` | `string` | required | Unique ID |
-| `name` | `string` | required | Group name |
-| `value` | `any` | required | Option value |
-| `groupValue` | `any` | required | Selected value (bind) |
-| `title` | `string` | `''` | Option title |
-| `description` | `string` | `''` | Option description |
-| `icon` | `string` | `null` | Font Awesome icon |
-| `variant` | `'default' \| 'success' \| 'danger'` | `'default'` | Color variant |
-| `disabled` | `boolean` | `false` | Disable state |
+| `items` | `array` | `[]` | Tab items (string or {label, icon, badge, disabled}) |
+| `activeTab` | `number` | `0` | Bindable active tab index |
+| `variant` | `'underline' \| 'pills' \| 'boxed'` | `'underline'` | Tab style |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Tab size |
+| `fullWidth` | `boolean` | `false` | Full width tabs |
+| `onchange` | `function` | `null` | Tab change callback |
 
-### Dropdown (Form)
-Custom select dropdown untuk form dengan label dan error handling.
+---
 
-```svelte
-<Dropdown 
-  label="Pilih Role"
-  name="role"
-  bind:value={$form.role}
-  options={[
-    { value: 'admin', label: 'Administrator' },
-    { value: 'member', label: 'Member' },
-    { value: 'guest', label: 'Guest' }
-  ]}
-  placeholder="Pilih role user"
-  error={$form.errors.role}
-  required
-/>
-```
+### Accordion
 
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | `''` | Field label |
-| `name` | `string` | `''` | Field name |
-| `value` | `string` | `''` | Selected value |
-| `options` | `Array<{value, label}>` | `[]` | Options |
-| `error` | `string` | `''` | Error message |
-| `required` | `boolean` | `false` | Required field |
-| `disabled` | `boolean` | `false` | Disable state |
-
-### FormError
-Menampilkan error message atau multiple errors.
-
-```svelte
-<!-- Single error -->
-<FormError message={error} />
-
-<!-- Multiple errors dari form -->
-<FormError errors={$form.errors} />
-
-<!-- Custom styling -->
-<FormError 
-  message="Email sudah terdaftar" 
-  class="mt-4 text-center"
-/>
-```
-
-## 📊 Dashboard Components
-
-### PageHeader
-Header halaman dengan breadcrumb, title, description, dan action buttons.
-
-```svelte
-<PageHeader 
-  title="User Management"
-  description="Kelola user sistem"
-  breadcrumbs={[
-    { label: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-home' },
-    { label: 'Users' }
-  ]}
->
-  <div slot="actions">
-    <Button 
-      href="/admin/users/create" 
-      icon="fas fa-plus"
-      size="md"
-    >
-      Tambah User
-    </Button>
-  </div>
-</PageHeader>
-
-<!-- Simple header -->
-<PageHeader title="Dashboard" />
-```
-
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | `''` | Page title |
-| `description` | `string` | `''` | Page description |
-| `breadcrumbs` | `Array<{label, href?, icon?}>` | `[]` | Breadcrumb items |
-
-### DataTable
-Tabel data lengkap dengan sorting, search, pagination, dan custom actions.
+Collapsible content sections.
 
 ```svelte
 <script>
-function handleAction(action, user) {
-  if (action.label === 'Edit') {
-    router.visit(`/admin/users/${user.id}/edit`);
-  } else if (action.label === 'Delete') {
-    // Show delete confirmation
-  }
-}
+    import Accordion from '@/Components/UI/Accordion.svelte';
+    
+    const items = [
+        { title: 'Section 1', content: 'Content here...', icon: 'fas fa-info' },
+        { title: 'Section 2', content: 'More content...' },
+    ];
 </script>
 
-<DataTable 
-  columns={[
-    { 
-      key: 'name', 
-      label: 'User', 
-      type: 'user',  // Special type untuk avatar + name/email
-      sortable: true 
-    },
-    { 
-      key: 'role', 
-      label: 'Role', 
-      type: 'badge',
-      badgeVariants: {
-        admin: 'danger',    // Admin = red badge
-        member: 'success'   // Member = green badge
-      }
-    },
-    { 
-      key: 'is_active', 
-      label: 'Status', 
-      type: 'status'  // Show active/inactive dengan dot
-    },
-    { 
-      key: 'created_at', 
-      label: 'Bergabung', 
-      type: 'date',
-      sortable: true 
-    }
-  ]}
-  data={users}
-  searchable
-  searchPlaceholder="Cari user..."
-  actions={[
-    { 
-      label: 'Edit', 
-      icon: 'fas fa-edit', 
-      variant: 'primary' 
-    },
-    { 
-      label: 'Delete', 
-      icon: 'fas fa-trash', 
-      variant: 'danger',
-      requireConfirm: true 
-    }
-  ]}
-  onAction={handleAction}
-/>
+<Accordion {items} multiple={true} defaultOpen={[0]} />
 ```
 
-**Column Types:**
-- `text` - Text biasa (default)
-- `user` - Avatar + name/email display
-- `badge` - Colored badge
-- `status` - Active/inactive indicator
-- `date` - Formatted date
-- `currency` - Format currency
-- `number` - Format number
-- `index` - Row number
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `array` | `[]` | Array of {title, content, icon} |
+| `multiple` | `boolean` | `false` | Allow multiple open |
+| `defaultOpen` | `array` | `[]` | Initially open item indices |
 
+---
 
-### Sidebar
-Sidebar navigasi dashboard dengan support untuk nested menu.
+### Breadcrumb
 
-```svelte
-<!-- Sudah dihandle di DashboardLayout -->
-<!-- Konfigurasi menu di DashboardLayout.svelte -->
-
-const menuItems = [
-  { 
-    label: 'Dashboard', 
-    href: '/admin/dashboard', 
-    icon: 'fas fa-home' 
-  },
-  { 
-    label: 'Users', 
-    href: '/admin/users', 
-    icon: 'fas fa-users',
-    badge: '5'  // Optional badge
-  },
-  { 
-    label: 'Settings',
-    icon: 'fas fa-cog',
-    children: [  // Nested menu
-      { label: 'General', href: '/admin/settings' },
-      { label: 'Security', href: '/admin/settings/security' }
-    ]
-  }
-];
-```
-
-## 🎨 Layout Components
-
-### AuthLayout
-Layout untuk halaman authentication (login, register, dll).
-
-```svelte
-<AuthLayout>
-  <!-- Content otomatis di-center dengan card -->
-  <form>
-    <!-- Form content -->
-  </form>
-</AuthLayout>
-```
-
-### DashboardLayout
-Layout untuk halaman dashboard dengan sidebar dan navbar.
-
-```svelte
-<DashboardLayout>
-  <!-- Page content -->
-  <PageHeader title="Dashboard" />
-  
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Dashboard content -->
-  </div>
-</DashboardLayout>
-```
-
-### GuestLayout
-Layout untuk halaman public/guest.
-
-```svelte
-<GuestLayout>
-  <!-- Public page content -->
-</GuestLayout>
-```
-
-## 🎨 Theming
-
-Aplikasi mendukung 5 tema warna:
-- **Orange** (Default) - Warm & energetic
-- **Blue Ocean** - Professional & trustworthy  
-- **Emerald Green** - Fresh & growth
-- **Royal Purple** - Creative & premium
-- **Slate Gray** - Modern & minimalist
-
-Tema dapat diubah melalui Settings page. Semua komponen otomatis menyesuaikan dengan tema yang dipilih.
-
-## 📋 Form Integration dengan Inertia
+Navigation breadcrumb trail.
 
 ```svelte
 <script>
-import { useForm } from '@inertiajs/svelte';
-import Button from '@/Components/UI/Button.svelte';
-import IconInput from '@/Components/UI/Form/IconInput.svelte';
-import alert from '@/Stores/alertStore';
-
-const form = useForm({
-  name: '',
-  email: '',
-  password: ''
-});
-
-function handleSubmit() {
-  $form.post('/users', {
-    onSuccess: () => {
-      alert.success('User berhasil ditambahkan');
-    },
-    onError: () => {
-      alert.error('Terjadi kesalahan');
-    }
-  });
-}
+    import Breadcrumb from '@/Components/UI/Breadcrumb.svelte';
+    
+    const items = [
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Users', href: '/users' },
+        { label: 'Edit' },
+    ];
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-  <IconInput 
-    label="Name"
-    icon="fas fa-user"
-    bind:value={$form.name}
-    error={$form.errors.name}
-    required
-  />
-  
-  <IconInput 
-    label="Email"
+<Breadcrumb {items} />
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `array` | `[]` | Array of {label, href?, icon?} |
+| `separator` | `string` | `'/'` | Separator character |
+| `showHome` | `boolean` | `true` | Show home icon |
+| `homeUrl` | `string` | `'/admin/dashboard'` | Home link URL |
+| `homeIcon` | `string` | `'fas fa-home'` | Home icon class |
+
+---
+
+## Form Components
+
+### TextInput
+
+General purpose text input with icon support.
+
+```svelte
+<script>
+    import TextInput from '@/Components/UI/Form/TextInput.svelte';
+    let value = $state('');
+</script>
+
+<TextInput 
+    label="Email" 
     type="email"
     icon="fas fa-envelope"
-    bind:value={$form.email}
-    error={$form.errors.email}
-    required
-  />
-  
-  <Button 
-    type="submit"
-    loading={$form.processing}
-    disabled={$form.processing}
-  >
-    {$form.processing ? 'Menyimpan...' : 'Simpan'}
-  </Button>
-</form>
+    placeholder="you@example.com"
+    bind:value
+    error="Please enter a valid email"
+/>
 ```
 
-## 🔧 Tips & Best Practices
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `''` | Input label |
+| `type` | `string` | `'text'` | Input type |
+| `value` | `string` | `''` | Bindable value |
+| `placeholder` | `string` | `''` | Placeholder text |
+| `icon` | `string` | `''` | Icon class |
+| `iconPosition` | `'left' \| 'right'` | `'left'` | Icon position |
+| `error` | `string` | `''` | Error message |
+| `hint` | `string` | `''` | Help text |
+| `required` | `boolean` | `false` | Required field |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Input size |
 
-1. **Import Path**: Selalu gunakan alias `@/Components/`
-   ```svelte
+---
+
+### PasswordInput
+
+Password input with visibility toggle and strength indicator.
+
+```svelte
+<script>
+    import PasswordInput from '@/Components/UI/Form/PasswordInput.svelte';
+    let password = $state('');
+</script>
+
+<PasswordInput 
+    bind:value={password}
+    showStrength={true}
+    placeholder="Enter password"
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `''` | Bindable value |
+| `placeholder` | `string` | `'Enter password'` | Placeholder |
+| `error` | `string` | `''` | Error message |
+| `showStrength` | `boolean` | `false` | Show strength indicator |
+| `required` | `boolean` | `false` | Required field |
+| `autocomplete` | `string` | `'current-password'` | Autocomplete hint |
+
+---
+
+### Textarea
+
+Multi-line text input with character count.
+
+```svelte
+<script>
+    import Textarea from '@/Components/UI/Form/Textarea.svelte';
+    let content = $state('');
+</script>
+
+<Textarea 
+    label="Description"
+    bind:value={content}
+    rows={4}
+    maxlength={500}
+    showCount={true}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `''` | Input label |
+| `value` | `string` | `''` | Bindable value |
+| `placeholder` | `string` | `''` | Placeholder |
+| `rows` | `number` | `4` | Visible rows |
+| `maxlength` | `number` | `null` | Max characters |
+| `showCount` | `boolean` | `false` | Show character count |
+| `resize` | `'none' \| 'vertical' \| 'horizontal' \| 'both'` | `'vertical'` | Resize behavior |
+| `error` | `string` | `''` | Error message |
+
+---
+
+### Select
+
+Dropdown select input.
+
+```svelte
+<script>
+    import Select from '@/Components/UI/Form/Select.svelte';
+    let role = $state('');
+    
+    const options = [
+        { value: 'admin', label: 'Administrator' },
+        { value: 'member', label: 'Member' },
+    ];
+</script>
+
+<Select 
+    label="Role"
+    {options}
+    bind:value={role}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `''` | Input label |
+| `value` | `string` | `''` | Bindable value |
+| `options` | `array` | `[]` | Array of {value, label, disabled?} or strings |
+| `placeholder` | `string` | `'Select an option'` | Placeholder |
+| `error` | `string` | `''` | Error message |
+| `required` | `boolean` | `false` | Required field |
+| `disabled` | `boolean` | `false` | Disabled state |
+
+---
+
+### Checkbox
+
+Checkbox with label and description.
+
+```svelte
+<script>
+    import Checkbox from '@/Components/UI/Form/Checkbox.svelte';
+    let agreed = $state(false);
+</script>
+
+<Checkbox 
+    label="I agree to the terms"
+    description="By checking this, you accept our Terms of Service"
+    bind:checked={agreed}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | `false` | Bindable checked state |
+| `label` | `string` | `''` | Checkbox label |
+| `description` | `string` | `''` | Help text below label |
+| `value` | `string` | `''` | Form value |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Checkbox size |
+| `error` | `string` | `''` | Error message |
+| `onchange` | `function` | `null` | Change callback |
+
+---
+
+### RadioOption
+
+Radio button with label and description.
+
+```svelte
+<script>
+    import RadioOption from '@/Components/UI/Form/RadioOption.svelte';
+    let plan = $state('basic');
+</script>
+
+<RadioOption 
+    name="plan"
+    value="basic"
+    label="Basic Plan"
+    description="$9/month"
+    bind:selectedValue={plan}
+/>
+<RadioOption 
+    name="plan"
+    value="pro"
+    label="Pro Plan"
+    description="$29/month"
+    bind:selectedValue={plan}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | `''` | Radio group name |
+| `value` | `string` | `''` | Radio value |
+| `selectedValue` | `string` | `''` | Bindable selected value |
+| `label` | `string` | `''` | Radio label |
+| `description` | `string` | `''` | Help text |
+| `disabled` | `boolean` | `false` | Disabled state |
+
+---
+
+### FileUpload
+
+Drag and drop file upload with preview.
+
+```svelte
+<script>
+    import FileUpload from '@/Components/UI/Form/FileUpload.svelte';
+    
+    function handleFiles(files) {
+        console.log('Selected files:', files);
+    }
+</script>
+
+<FileUpload 
+    label="Upload Documents"
+    accept=".pdf,.doc,.docx"
+    multiple={true}
+    maxSize={10}
+    onchange={handleFiles}
+/>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `'Upload files'` | Label text |
+| `accept` | `string` | `'*'` | Accepted file types |
+| `multiple` | `boolean` | `false` | Allow multiple files |
+| `maxSize` | `number` | `5` | Max file size in MB |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `error` | `string` | `''` | Error message |
+| `hint` | `string` | `''` | Help text |
+| `onchange` | `function` | `null` | Files change callback |
+
+---
+
+## Best Practices
+
+1. **Import alias**: Always use `@/` alias for imports
+   ```js
    import Button from '@/Components/UI/Button.svelte';
    ```
 
-2. **Event Handling**: Gunakan event forwarding untuk flexibility
-   ```svelte
-   <Button on:click={() => handleClick()} />
+2. **Svelte 5 Runes**: Use `$state()` for reactive state, `$derived()` for computed values
+   ```js
+   let count = $state(0);
+   let doubled = $derived(count * 2);
    ```
 
-3. **Loading States**: Selalu handle loading untuk UX yang baik
-   ```svelte
-   <Button loading={isLoading} disabled={isLoading}>
-     {isLoading ? 'Processing...' : 'Submit'}
-   </Button>
+3. **Bindable props**: Use `$bindable()` for two-way binding
+   ```js
+   let { value = $bindable('') } = $props();
    ```
 
-4. **Error Handling**: Tampilkan error dengan jelas
+4. **Callback props**: Use callbacks instead of events
    ```svelte
-   <Input error={$form.errors.email} />
+   <Button onclick={() => handleClick()}>Click me</Button>
    ```
 
-5. **Responsive Design**: Gunakan Tailwind responsive utilities
+5. **Snippets**: Use `{#snippet}` for slot-like content
    ```svelte
-   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   <Modal>
+       {#snippet footer()}
+           <Button>Save</Button>
+       {/snippet}
+   </Modal>
    ```
-
-6. **Accessibility**: Pastikan semua interactive elements accessible
-   ```svelte
-   <button aria-label="Delete user" title="Delete user">
-   ```
-
-## 📝 Catatan
-
-- Semua komponen mendukung theme switching otomatis
-- Komponen form terintegrasi dengan Inertia.js form handling  
-- Icons menggunakan Font Awesome 5
-- Responsive design untuk semua screen sizes
-- Tailwind CSS v4 dengan CSS variables untuk theming
-
-## 🚀 Quick Start
-
-```svelte
-<script>
-// Import komponen yang dibutuhkan
-import { useForm } from '@inertiajs/svelte';
-import DashboardLayout from '@/Components/Layouts/DashboardLayout.svelte';
-import PageHeader from '@/Components/Dashboard/PageHeader.svelte';
-import Card from '@/Components/UI/Card.svelte';
-import Button from '@/Components/UI/Button.svelte';
-import IconInput from '@/Components/UI/Form/IconInput.svelte';
-import alert from '@/Stores/alertStore';
-
-// Setup form
-const form = useForm({
-  title: '',
-  description: ''
-});
-
-// Handle submit
-function handleSubmit() {
-  $form.post('/items', {
-    onSuccess: () => alert.success('Item created!')
-  });
-}
-</script>
-
-<DashboardLayout>
-  <PageHeader 
-    title="Create Item"
-    breadcrumbs={[
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Items', href: '/items' },
-      { label: 'Create' }
-    ]}
-  />
-  
-  <Card>
-    <form on:submit|preventDefault={handleSubmit} class="space-y-4">
-      <IconInput 
-        label="Title"
-        icon="fas fa-heading"
-        bind:value={$form.title}
-        error={$form.errors.title}
-        required
-      />
-      
-      <div class="flex justify-end gap-3">
-        <Button href="/items" variant="secondary">
-          Cancel
-        </Button>
-        <Button 
-          type="submit"
-          loading={$form.processing}
-        >
-          Create
-        </Button>
-      </div>
-    </form>
-  </Card>
-</DashboardLayout>
-```

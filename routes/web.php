@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ComponentsController;
 use App\Http\Controllers\ProfileController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -39,6 +42,30 @@ Route::middleware('guest')->group(function () {
     })->name('password.reset');
 });
 
+// Email Verification Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return Inertia\Inertia::render('Auth/VerifyEmail', [
+            'status' => session('status')
+        ]);
+    })->name('verification.notice');
+    
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        
+        $user = $request->user();
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard')->with('success', 'Email verified successfully!');
+        }
+        return redirect('/dashboard')->with('success', 'Email verified successfully!');
+    })->middleware('signed')->name('verification.verify');
+    
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('status', 'verification-link-sent');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
+
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -51,10 +78,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     
+    // Sessions
+    Route::get('/sessions', [\App\Http\Controllers\SessionController::class, 'index'])->name('sessions.index');
+    
     // Settings
     Route::get('/settings', function () {
         return Inertia\Inertia::render('Dashboard/Admin/Settings');
     })->name('settings');
+    
+    // Components Library
+    Route::get('/components', [ComponentsController::class, 'index'])->name('components');
 });
 
 // Member Routes
@@ -67,6 +100,15 @@ Route::middleware(['auth', 'role:member'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    
+    // Sessions
+    Route::get('/sessions', [\App\Http\Controllers\SessionController::class, 'index'])->name('sessions.index');
+});
+
+// Session Management (shared routes)
+Route::middleware('auth')->group(function () {
+    Route::delete('/sessions/{session}', [\App\Http\Controllers\SessionController::class, 'destroy'])->name('sessions.destroy');
+    Route::delete('/sessions', [\App\Http\Controllers\SessionController::class, 'destroyOthers'])->name('sessions.destroy-others');
 });
 
 // Logout route - available for authenticated users

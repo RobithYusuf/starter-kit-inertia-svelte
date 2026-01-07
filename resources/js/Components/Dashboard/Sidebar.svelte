@@ -1,28 +1,66 @@
 <script>
     import { Link, page, router } from '@inertiajs/svelte';
-    import { createEventDispatcher, onMount } from 'svelte';
     import Logo from '@/Components/Shared/Logo.svelte';
     
-    export let sidebarOpen = false;
-    export let sidebarCollapsed = false;
-    const dispatch = createEventDispatcher();
+    // Svelte 5: Using $props() with $bindable for two-way binding
+    let { sidebarOpen = $bindable(false), sidebarCollapsed = $bindable(false) } = $props();
     
-    let innerWidth;
+    let innerWidth = $state(0);
     
-    $: userRole = $page.props.auth?.user?.role || 'member';
-    $: currentPath = $page.url ? $page.url.split('?')[0] : '';
-    $: menuCategories = userRole === 'admin' ? adminMenuCategories : memberMenuCategories;
-    $: isMobile = innerWidth < 768;
-    $: effectiveCollapsed = !isMobile && sidebarCollapsed;
+    // Svelte 5: Using $derived for computed values
+    let userRole = $derived($page.props.auth?.user?.role || 'member');
+    let currentPath = $derived($page.url ? $page.url.split('?')[0] : '');
+    let isMobile = $derived(innerWidth < 768);
+    let effectiveCollapsed = $derived(!isMobile && sidebarCollapsed);
     
-    onMount(() => {
+    const adminMenuCategories = [
+        {
+            id: 'main',
+            name: 'Main',
+            items: [
+                { id: 'dashboard', name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-home' },
+                { id: 'users', name: 'Users', href: '/admin/users', icon: 'fas fa-users' },
+            ]
+        },
+        {
+            id: 'account',
+            name: 'Account',
+            items: [
+                { id: 'profile', name: 'Profile', href: '/admin/profile', icon: 'fas fa-user-circle' },
+                { id: 'sessions', name: 'Sessions', href: '/admin/sessions', icon: 'fas fa-desktop' },
+                { id: 'settings', name: 'Settings', href: '/admin/settings', icon: 'fas fa-cog' },
+            ]
+        },
+        {
+            id: 'developer',
+            name: 'Developer',
+            items: [
+                { id: 'components', name: 'Components', href: '/admin/components', icon: 'fas fa-puzzle-piece' },
+            ]
+        }
+    ];
+    
+    const memberMenuCategories = [
+        {
+            id: 'main',
+            name: 'Main Menu',
+            items: [
+                { id: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: 'fas fa-home' },
+                { id: 'profile', name: 'My Profile', href: '/profile', icon: 'fas fa-user' },
+                { id: 'sessions', name: 'Sessions', href: '/sessions', icon: 'fas fa-desktop' },
+            ]
+        }
+    ];
+    
+    let menuCategories = $derived(userRole === 'admin' ? adminMenuCategories : memberMenuCategories);
+    
+    // Svelte 5: Using $effect for side effects
+    $effect(() => {
         innerWidth = window.innerWidth;
-        // Don't auto-open sidebar on mount for mobile
         sidebarOpen = false;
         
         const handleResize = () => {
             innerWidth = window.innerWidth;
-            // Don't auto-toggle sidebar on resize
         };
         
         const handleOutsideClick = (event) => {
@@ -44,40 +82,9 @@
         };
     });
     
-    const adminMenuCategories = [
-        {
-            id: 'main',
-            name: 'Main',
-            items: [
-                { id: 'dashboard', name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-home' },
-                { id: 'users', name: 'Users', href: '/admin/users', icon: 'fas fa-users' },
-            ]
-        },
-        {
-            id: 'account',
-            name: 'Account',
-            items: [
-                { id: 'profile', name: 'Profile', href: '/admin/profile', icon: 'fas fa-user-circle' },
-                { id: 'settings', name: 'Settings', href: '/admin/settings', icon: 'fas fa-cog' },
-            ]
-        }
-    ];
-    
-    const memberMenuCategories = [
-        {
-            id: 'main',
-            name: 'Main Menu',
-            items: [
-                { id: 'dashboard', name: 'Dashboard', href: '/dashboard', icon: 'fas fa-home' },
-                { id: 'profile', name: 'My Profile', href: '/profile', icon: 'fas fa-user' }
-            ]
-        }
-    ];
-    
     function closeSidebar() {
         if (innerWidth < 1024) {
             sidebarOpen = false;
-            dispatch('toggle', false);
         }
     }
     
@@ -101,7 +108,7 @@
 <!-- Sidebar -->
 <aside
     id="sidebar"
-    class="fixed inset-y-0 left-0 z-30 w-64 md:{sidebarCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 transition-all duration-300 transform {sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static"
+    class="fixed inset-y-0 left-0 z-30 {effectiveCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 transition-all duration-300 transform {sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0"
 >
     <div class="flex flex-col h-full">
         <!-- Header -->
@@ -117,7 +124,7 @@
             
             <!-- Mobile close button -->
             <button
-                on:click={closeSidebar}
+                onclick={closeSidebar}
                 class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
                 <i class="fas fa-times text-gray-600 text-lg"></i>
@@ -144,18 +151,18 @@
                 {/if}
                 
                 <!-- Menu items -->
-                <div class="{sidebarCollapsed ? 'space-y-1' : 'space-y-1'}">
+                <div class="space-y-1">
                     {#each category.items as item}
                         <a
                             href={item.href}
-                            on:click={(e) => handleNavigation(item.href, e)}
+                            onclick={(e) => handleNavigation(item.href, e)}
                             class="flex items-center {effectiveCollapsed ? 'justify-center px-2' : 'px-3'} py-2.5 text-sm font-medium rounded-lg transition-all duration-200 {isActive(item.href) 
                                 ? 'bg-primary-50 text-primary-700' 
                                 : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}"
                             title={effectiveCollapsed ? item.name : ''}
                         >
                             <i class="{item.icon} {effectiveCollapsed ? 'text-lg' : 'text-sm w-5 text-center'} {isActive(item.href) ? 'text-primary-600' : 'text-gray-400'}"></i>
-                            {#if !effectiveCollapsed}
+                                        {#if !effectiveCollapsed}
                             <span class="ml-3">{item.name}</span>
                             {/if}
                             {#if isActive(item.href) && !effectiveCollapsed}
@@ -172,7 +179,7 @@
             <!-- Logout Button -->
             <div class="{effectiveCollapsed ? 'px-2 py-2' : 'px-3 py-3'}">
                 <button
-                    on:click={() => router.post('/logout')}
+                    onclick={() => router.post('/logout')}
                     class="flex items-center {effectiveCollapsed ? 'justify-center' : ''} w-full {effectiveCollapsed ? 'px-2' : 'px-3'} py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
                     title={effectiveCollapsed ? 'Logout' : ''}
                 >
@@ -188,9 +195,11 @@
 
 <!-- Mobile backdrop -->
 {#if sidebarOpen && innerWidth < 768}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         class="fixed inset-0 bg-black/50 z-20 lg:hidden"
-        on:click={closeSidebar}
+        onclick={closeSidebar}
     ></div>
 {/if}
 

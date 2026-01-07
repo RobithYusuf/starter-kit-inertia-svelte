@@ -2,7 +2,7 @@
     import GuestLayout from '@/Components/Layouts/GuestLayout.svelte';
     import Button from '@/Components/UI/Button.svelte';
     
-    export let status;
+    let { status } = $props();
     
     const errors = {
         403: {
@@ -27,10 +27,10 @@
         }
     };
     
-    $: error = errors[status] || {
+    const error = $derived(errors[status] || {
         title: `Error ${status}`,
         message: 'An unexpected error occurred.'
-    };
+    });
 </script>
 
 <GuestLayout>
@@ -70,7 +70,7 @@
                     icon="fas fa-arrow-left"
                     size="default"
                     className="w-full sm:w-auto"
-                    on:click={() => window.history.back()}
+                    onclick={() => window.history.back()}
                 >
                     Go Back
                 </Button>

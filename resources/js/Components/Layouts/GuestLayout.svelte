@@ -3,10 +3,9 @@
     import Logo from '@/Components/Shared/Logo.svelte';
     import Button from '@/Components/UI/Button.svelte';
     
-    export let showNav = true;
-    export let showFooter = true;
+    let { showNav = true, showFooter = true, children } = $props();
     
-    $: isAuthenticated = $page.props.auth?.user !== null && $page.props.auth?.user !== undefined;
+    const isAuthenticated = $derived($page.props.auth?.user !== null && $page.props.auth?.user !== undefined);
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex flex-col">
@@ -60,7 +59,7 @@
     
     <!-- Main Content -->
     <main class="flex-grow">
-        <slot />
+        {@render children()}
     </main>
     
     <!-- Footer -->

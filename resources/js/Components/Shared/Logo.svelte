@@ -1,12 +1,16 @@
 <script>
     import { Link } from '@inertiajs/svelte';
     
-    export let href = '/';
-    export let size = 'default';
-    export let showTagline = false;
-    export let showText = true;
-    export let theme = 'light'; // 'light' or 'dark'
-    export let layout = 'horizontal'; // 'horizontal' or 'vertical'
+    // Svelte 5: Using $props()
+    let { 
+        href = '/',
+        size = 'default',
+        showTagline = false,
+        showText = true,
+        theme = 'light',
+        layout = 'horizontal',
+        tagline
+    } = $props();
     
     const sizes = {
         small: { box: 'w-8 h-8', icon: 'text-sm', text: 'text-base', padding: 'p-1.5' },
@@ -14,9 +18,10 @@
         large: { box: 'w-12 h-12', icon: 'text-lg', text: 'text-xl', padding: 'p-2.5' }
     };
     
-    $: currentSize = sizes[size] || sizes.default;
-    $: textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
-    $: taglineColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
+    // Svelte 5: Using $derived for computed values
+    let currentSize = $derived(sizes[size] || sizes.default);
+    let textColor = $derived(theme === 'dark' ? 'text-white' : 'text-gray-900');
+    let taglineColor = $derived(theme === 'dark' ? 'text-gray-300' : 'text-gray-600');
 </script>
 
 <Link {href} class="{layout === 'vertical' ? 'inline-flex flex-col items-center' : 'flex items-center'} group">
@@ -33,7 +38,11 @@
         </span>
         {#if showTagline}
             <span class="block text-xs {taglineColor} transition-all duration-300">
-                <slot name="tagline">Laravel Inertia Svelte</slot>
+                {#if tagline}
+                    {@render tagline()}
+                {:else}
+                    Laravel Inertia Svelte
+                {/if}
             </span>
         {/if}
     </div>

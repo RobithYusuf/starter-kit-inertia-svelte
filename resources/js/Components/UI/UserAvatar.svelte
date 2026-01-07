@@ -1,8 +1,11 @@
 <script>
-    export let name = '';
-    export let size = 'default';
-    export let image = null;
-    export let colorScheme = 'auto'; // 'auto', 'fixed', or custom color
+    // Svelte 5: Using $props()
+    let { 
+        name = '',
+        size = 'default',
+        image = null,
+        colorScheme = 'auto'
+    } = $props();
     
     const sizes = {
         xs: 'w-6 h-6 text-xs',
@@ -32,16 +35,17 @@
         return colors[Math.abs(hash) % colors.length];
     };
     
-    $: bgColor = colorScheme === 'auto' ? getColorFromName(name) : 
+    // Svelte 5: Using $derived for computed values
+    let bgColor = $derived(colorScheme === 'auto' ? getColorFromName(name) : 
                  colorScheme === 'fixed' ? '#6B7280' : // gray-500
-                 colorScheme;
+                 colorScheme);
     
-    $: initials = name
+    let initials = $derived(name
         .split(' ')
         .map(word => word.charAt(0))
         .join('')
         .toUpperCase()
-        .slice(0, 2) || '?';
+        .slice(0, 2) || '?');
 </script>
 
 {#if image}

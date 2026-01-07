@@ -32,7 +32,7 @@
     {/if}
     
     <!-- Form -->
-    <form on:submit|preventDefault={submit} class="space-y-5">
+    <form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-5">
         <!-- Email Field -->
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -72,10 +72,8 @@
                 <span class="ml-2 text-sm text-gray-700">Remember me</span>
             </label>
             
-            <Link href="/forgot-password" class="text-sm font-medium transition-colors"
-                  style="color: var(--theme-primary-600)"
-                  on:mouseenter={(e) => e.currentTarget.style.color = 'var(--theme-primary-700)'}
-                  on:mouseleave={(e) => e.currentTarget.style.color = 'var(--theme-primary-600)'}>
+            <Link href="/forgot-password" class="text-sm font-medium transition-colors hover:opacity-80"
+                  style="color: var(--theme-primary-600)">
                 Forgot password?
             </Link>
         </div>
@@ -100,10 +98,8 @@
     <div class="mt-8 pt-6 border-t border-gray-100 text-center">
         <p class="text-sm text-gray-600">
             Don't have an account?
-            <Link href="/register" class="font-medium transition-colors"
-                  style="color: var(--theme-primary-600)"
-                  on:mouseenter={(e) => e.currentTarget.style.color = 'var(--theme-primary-700)'}
-                  on:mouseleave={(e) => e.currentTarget.style.color = 'var(--theme-primary-600)'}>
+            <Link href="/register" class="font-medium transition-colors hover:opacity-80"
+                  style="color: var(--theme-primary-600)">
                 Sign up for free
             </Link>
         </p>

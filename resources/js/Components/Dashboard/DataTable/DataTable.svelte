@@ -1,30 +1,34 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
     import { router } from '@inertiajs/svelte';
     import TableCell from './TableCell.svelte';
     import TableAction from './TableAction.svelte';
     import Pagination from '@/Components/UI/Pagination.svelte';
     import SelectDropdown from '@/Components/UI/SelectDropdown.svelte';
     
-    export let columns = [];
-    export let data = [];
-    export let meta = {};
-    export let links = {};
-    export let editRoute = '';
-    export let emptyMessage = 'No data found';
-    export let loadingData = false;
-    export let currentSortField = '';
-    export let currentSortOrder = '';
-    export let actionLabels = { edit: 'Edit', delete: 'Delete', view: 'View' };
-    export let perPage = 10;
-    export let perPageOptions = [10, 25, 50, 100];
+    let { 
+        columns = [], 
+        data = [], 
+        meta = {}, 
+        links = {}, 
+        editRoute = '', 
+        emptyMessage = 'No data found', 
+        loadingData = false, 
+        currentSortField = '', 
+        currentSortOrder = '', 
+        actionLabels = { edit: 'Edit', delete: 'Delete', view: 'View' }, 
+        perPage = $bindable(10), 
+        perPageOptions = [10, 25, 50, 100],
+        onsort = () => {},
+        ondelete = () => {},
+        onview = () => {},
+        onpage = () => {},
+        onperPageChange = () => {}
+    } = $props();
     
-    $: perPageSelectOptions = perPageOptions.map(num => ({
+    let perPageSelectOptions = $derived(perPageOptions.map(num => ({
         value: num,
         label: num.toString()
-    }));
-    
-    const dispatch = createEventDispatcher();
+    })));
     
     function handleSort(field) {
         if (!columns.find(col => col.key === field)?.sortable) return;
@@ -34,24 +38,24 @@
             order = 'desc';
         }
         
-        dispatch('sort', { field, order });
+        onsort({ field, order });
     }
     
     function handleDelete(id) {
-        dispatch('delete', id);
+        ondelete(id);
     }
     
     function handleView(id) {
-        dispatch('view', id);
+        onview(id);
     }
     
     function handlePageChange(page) {
-        dispatch('page', page);
+        onpage(page);
     }
     
     function handlePerPageChange(newValue) {
         perPage = newValue;
-        dispatch('perPageChange', parseInt(newValue));
+        onperPageChange(parseInt(newValue));
     }
     
     function getCellValue(row, column) {
@@ -75,7 +79,7 @@
                     {#each columns as column}
                         <th 
                             class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider {column.className || ''} {column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : ''} {column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''}"
-                            on:click={() => handleSort(column.key)}
+                            onclick={() => handleSort(column.key)}
                         >
                             <div class="flex items-center {column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : ''}">
                                 {column.label}
@@ -121,8 +125,8 @@
                                             canEdit={column.actions?.edit !== false}
                                             canDelete={column.actions?.delete !== false}
                                             canView={column.actions?.view === true}
-                                            on:delete={() => handleDelete(row.id)}
-                                            on:view={() => handleView(row.id)}
+                                            ondelete={() => handleDelete(row.id)}
+                                            onview={() => handleView(row.id)}
                                         />
                                     {:else}
                                         <TableCell 
@@ -162,7 +166,7 @@
                         <SelectDropdown 
                             bind:value={perPage}
                             options={perPageSelectOptions}
-                            on:change={(e) => handlePerPageChange(e.detail || perPage)}
+                            onchange={(val) => handlePerPageChange(val || perPage)}
                         />
                     </div>
                     <span class="text-sm text-gray-600">entries</span>
@@ -172,7 +176,7 @@
                 <Pagination 
                     {meta} 
                     {links} 
-                    on:pageChange={(e) => handlePageChange(e.detail)}
+                    onpageChange={(page) => handlePageChange(page)}
                 />
             </div>
         </div>

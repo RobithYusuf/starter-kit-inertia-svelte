@@ -1,13 +1,20 @@
 <script>
-    export let type = 'button';
-    export let variant = 'primary';
-    export let size = 'md';
-    export let disabled = false;
-    export let loading = false;
-    export let icon = null;
-    export let iconPosition = 'left';
-    export let href = null;
-    export let external = false;
+    // Svelte 5: Using $props() for all props
+    let { 
+        type = 'button',
+        variant = 'primary',
+        size = 'md',
+        disabled = false,
+        loading = false,
+        icon = null,
+        iconPosition = 'left',
+        href = null,
+        external = false,
+        class: className = '',
+        onclick = null,
+        children,
+        ...restProps
+    } = $props();
     
     const baseStyles = {
         display: 'inline-flex',
@@ -88,43 +95,44 @@
         }
     };
     
-    let hovering = false;
+    let hovering = $state(false);
     
-    $: currentVariant = variants[variant] || variants.primary;
-    $: currentSize = sizes[size] || sizes.md;
-    $: buttonStyles = {
+    // Svelte 5: Using $derived for computed values
+    let currentVariant = $derived(variants[variant] || variants.primary);
+    let currentSize = $derived(sizes[size] || sizes.md);
+    let buttonStyles = $derived({
         ...baseStyles,
         ...currentVariant,
         ...currentSize,
         ...(hovering && !disabled && currentVariant[':hover'] ? currentVariant[':hover'] : {})
-    };
+    });
     
-    $: styleString = Object.entries(buttonStyles)
+    let styleString = $derived(Object.entries(buttonStyles)
         .filter(([key]) => !key.startsWith(':'))
         .map(([key, value]) => {
             const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
             return `${cssKey}: ${value}`;
         })
-        .join('; ');
+        .join('; '));
 </script>
 
 {#if href}
     <a
         {href}
         style={styleString}
-        class={$$props.class || ''}
+        class={className}
         target={external ? '_blank' : undefined}
         rel={external ? 'noopener noreferrer' : undefined}
-        on:mouseenter={() => hovering = true}
-        on:mouseleave={() => hovering = false}
-        {...$$restProps}
+        onmouseenter={() => hovering = true}
+        onmouseleave={() => hovering = false}
+        {...restProps}
     >
         {#if loading}
             <i class="fas fa-spinner fa-spin"></i>
         {:else if icon && iconPosition === 'left'}
             <i class={icon}></i>
         {/if}
-        <slot />
+        {@render children?.()}
         {#if icon && iconPosition === 'right' && !loading}
             <i class={icon}></i>
         {/if}
@@ -134,18 +142,18 @@
         {type}
         {disabled}
         style={styleString}
-        class={$$props.class || ''}
-        on:click
-        on:mouseenter={() => hovering = true}
-        on:mouseleave={() => hovering = false}
-        {...$$restProps}
+        class={className}
+        onclick={onclick}
+        onmouseenter={() => hovering = true}
+        onmouseleave={() => hovering = false}
+        {...restProps}
     >
         {#if loading}
             <i class="fas fa-spinner fa-spin"></i>
         {:else if icon && iconPosition === 'left'}
             <i class={icon}></i>
         {/if}
-        <slot />
+        {@render children?.()}
         {#if icon && iconPosition === 'right' && !loading}
             <i class={icon}></i>
         {/if}

@@ -1,18 +1,17 @@
 <script>
     import { useForm } from '@inertiajs/svelte';
-    import { onMount } from 'svelte';
     import DashboardLayout from '@/Components/Layouts/DashboardLayout.svelte';
     import PageHeader from '@/Components/Dashboard/PageHeader.svelte';
     import Button from '@/Components/UI/Button.svelte';
     import IconInput from '@/Components/UI/Form/IconInput.svelte';
-    import alert from '@/Stores/alertStore';
+    import alertStore from '@/Stores/alertStore.svelte.js';
     
-    export let user;
+    let { user } = $props();
     
-    let showPasswordFields = false;
-    let showCurrentPassword = false;
-    let showNewPassword = false;
-    let showConfirmPassword = false;
+    let showPasswordFields = $state(false);
+    let showCurrentPassword = $state(false);
+    let showNewPassword = $state(false);
+    let showConfirmPassword = $state(false);
     
     const profileForm = useForm({
         name: user.name || '',
@@ -28,7 +27,7 @@
     function updateProfile() {
         $profileForm.put('/admin/profile', {
             onSuccess: () => {
-                alert.success('Profile updated successfully');
+                alertStore.success('Profile updated successfully');
             },
             preserveScroll: true,
         });
@@ -37,7 +36,7 @@
     function updatePassword() {
         $passwordForm.put('/admin/profile/password', {
             onSuccess: () => {
-                alert.success('Password updated successfully');
+                alertStore.success('Password updated successfully');
                 $passwordForm.reset();
                 showPasswordFields = false;
             },
@@ -101,7 +100,7 @@
                     <h3 class="text-lg font-semibold text-gray-900">Profile Information</h3>
                     <p class="text-sm text-gray-500 mt-1">Update your account profile information and email address</p>
                 </div>
-                <form on:submit|preventDefault={updateProfile} class="p-6 space-y-4">
+                <form onsubmit={(e) => { e.preventDefault(); updateProfile(); }} class="p-6 space-y-4">
                     <IconInput
                         id="name"
                         label="Full Name"
@@ -148,7 +147,7 @@
                     <Button
                         variant="ghost"
                         size="sm"
-                        on:click={togglePasswordFields}
+                        onclick={togglePasswordFields}
                         icon={showPasswordFields ? 'fas fa-times' : 'fas fa-edit'}
                     >
                         {showPasswordFields ? 'Cancel' : 'Change'}
@@ -156,7 +155,7 @@
                 </div>
                 
                 {#if showPasswordFields}
-                    <form on:submit|preventDefault={updatePassword} class="p-6 space-y-4">
+                    <form onsubmit={(e) => { e.preventDefault(); updatePassword(); }} class="p-6 space-y-4">
                         <div class="relative">
                             <IconInput
                                 id="current_password"
@@ -170,7 +169,7 @@
                             />
                             <button
                                 type="button"
-                                on:click={() => showCurrentPassword = !showCurrentPassword}
+                                onclick={() => showCurrentPassword = !showCurrentPassword}
                                 class="absolute right-3 top-[34px] text-gray-400 hover:text-gray-600"
                             >
                                 <i class="fas fa-eye{showCurrentPassword ? '-slash' : ''}"></i>
@@ -190,7 +189,7 @@
                             />
                             <button
                                 type="button"
-                                on:click={() => showNewPassword = !showNewPassword}
+                                onclick={() => showNewPassword = !showNewPassword}
                                 class="absolute right-3 top-[34px] text-gray-400 hover:text-gray-600"
                             >
                                 <i class="fas fa-eye{showNewPassword ? '-slash' : ''}"></i>
@@ -210,7 +209,7 @@
                             />
                             <button
                                 type="button"
-                                on:click={() => showConfirmPassword = !showConfirmPassword}
+                                onclick={() => showConfirmPassword = !showConfirmPassword}
                                 class="absolute right-3 top-[34px] text-gray-400 hover:text-gray-600"
                             >
                                 <i class="fas fa-eye{showConfirmPassword ? '-slash' : ''}"></i>

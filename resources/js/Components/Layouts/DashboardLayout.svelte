@@ -1,14 +1,21 @@
 <script>
-    import { onMount } from 'svelte';
     import { page, Link, router } from '@inertiajs/svelte';
     import Sidebar from '@/Components/Dashboard/Sidebar.svelte';
     import AlertContainer from '@/Components/UI/AlertContainer.svelte';
     import UserAvatar from '@/Components/UI/UserAvatar.svelte';
-    import alert from '@/Stores/alertStore';
+    import { alertStore } from '@/Stores/alertStore.svelte.js';
     
-    let sidebarOpen = false;
-    let sidebarCollapsed = false;
-    let userMenuOpen = false;
+    // Svelte 5: Using $props() for children
+    let { children } = $props();
+    
+    // Svelte 5: Using $state for reactive variables
+    let sidebarOpen = $state(false);
+    let sidebarCollapsed = $state(false);
+    let userMenuOpen = $state(false);
+    let processedFlash = $state(new Set());
+    
+    // Svelte 5: Using $derived for computed values
+    let userRole = $derived($page.props.auth?.user?.role || 'member');
     
     function toggleSidebar() {
         sidebarOpen = !sidebarOpen;
@@ -16,7 +23,6 @@
     
     function toggleSidebarCollapse() {
         sidebarCollapsed = !sidebarCollapsed;
-        // Save preference to localStorage
         localStorage.setItem('sidebarCollapsed', sidebarCollapsed);
     }
     
@@ -40,24 +46,47 @@
         }
     }
     
-    // Handle flash messages
-    onMount(() => {
-        const flash = $page.props.flash;
-        if (flash) {
-            if (flash.success) alert.success(flash.success);
-            if (flash.error) alert.error(flash.error);
-            if (flash.warning) alert.warning(flash.warning);
-            if (flash.message) alert.info(flash.message);
-        }
+    // Svelte 5: Using $effect for side effects (replaces onMount for reactive effects)
+    $effect(() => {
+        // Handle flash messages using Inertia router finish event
+        const handleFlash = () => {
+            const flash = $page.props.flash;
+            if (flash) {
+                const flashId = JSON.stringify(flash);
+                if (!processedFlash.has(flashId)) {
+                    processedFlash.add(flashId);
+                    if (flash.success) alertStore.success(flash.success);
+                    if (flash.error) alertStore.error(flash.error);
+                    if (flash.warning) alertStore.warning(flash.warning);
+                    if (flash.message) alertStore.info(flash.message);
+                    
+                    // Clear old entries to prevent memory leak
+                    if (processedFlash.size > 50) {
+                        const entries = Array.from(processedFlash);
+                        entries.slice(0, 25).forEach(e => processedFlash.delete(e));
+                    }
+                }
+            }
+        };
         
+        // Process flash on navigation complete
+        const removeListener = router.on('finish', handleFlash);
+        
+        // Also check on mount
+        handleFlash();
+        
+        return () => {
+            removeListener();
+        };
+    });
+    
+    $effect(() => {
         // Check window size and set sidebar state accordingly
         const checkWindowSize = () => {
             const width = window.innerWidth;
             if (width >= 768 && width < 1024) {
-                // Tablet mode - auto collapse
                 sidebarCollapsed = true;
             } else if (width >= 1024) {
-                // Desktop mode - restore from localStorage
                 const savedCollapsed = localStorage.getItem('sidebarCollapsed');
                 if (savedCollapsed !== null) {
                     sidebarCollapsed = savedCollapsed === 'true';
@@ -74,13 +103,12 @@
         // Add click outside listener
         document.addEventListener('click', handleClickOutside);
         
+        // Cleanup function
         return () => {
             window.removeEventListener('resize', checkWindowSize);
             document.removeEventListener('click', handleClickOutside);
         };
     });
-    
-    $: userRole = $page.props.auth?.user?.role || 'member';
 </script>
 
 <div class="min-h-screen bg-gray-50 dashboard-layout">
@@ -91,7 +119,7 @@
         <Sidebar bind:sidebarOpen bind:sidebarCollapsed />
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
+        <div class="flex-1 flex flex-col overflow-hidden {sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300">
             <!-- Top Bar -->
             <header class="bg-white border-b border-gray-200 shadow-sm">
                 <div class="h-16 flex items-center justify-between px-3 sm:px-4 lg:px-6">
@@ -101,7 +129,7 @@
                         <!-- svelte-ignore a11y_consider_explicit_label -->
                         <button
                             id="sidebar-toggle"
-                            on:click={toggleSidebar}
+                            onclick={toggleSidebar}
                             class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                             <i class="fas fa-bars text-gray-600 text-lg"></i>
@@ -110,7 +138,7 @@
                         <!-- Tablet/Desktop collapse button -->
                         <!-- svelte-ignore a11y_consider_explicit_label -->
                         <button
-                            on:click={toggleSidebarCollapse}
+                            onclick={toggleSidebarCollapse}
                             class="hidden md:block p-2 rounded-lg hover:bg-gray-100 transition-colors"
                             title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         >
@@ -125,7 +153,7 @@
                         <div class="relative">
                             <button 
                                 id="user-menu-button"
-                                on:click={toggleUserMenu}
+                                onclick={toggleUserMenu}
                                 class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                             >
                                 <UserAvatar 
@@ -156,7 +184,7 @@
                                         <Link
                                             href={userRole === 'admin' ? '/admin/profile' : '/profile'}
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                            on:click={closeUserMenu}
+                                            onclick={closeUserMenu}
                                         >
                                             <i class="fas fa-user-circle mr-3 text-gray-400 text-sm"></i>
                                             Profile
@@ -165,7 +193,7 @@
                                         <Link
                                             href={userRole === 'admin' ? '/admin/settings' : '/settings'}
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                            on:click={closeUserMenu}
+                                            onclick={closeUserMenu}
                                         >
                                             <i class="fas fa-cog mr-3 text-gray-400 text-sm"></i>
                                             Settings
@@ -175,7 +203,7 @@
                                     <!-- Logout -->
                                     <div class="border-t border-gray-200 py-1">
                                         <button
-                                            on:click={() => {
+                                            onclick={() => {
                                                 closeUserMenu();
                                                 router.post('/logout');
                                             }}
@@ -195,7 +223,7 @@
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto">
                 <div class="p-3 sm:p-4 lg:p-6">
-                    <slot />
+                    {@render children?.()}
                 </div>
             </main>
         </div>

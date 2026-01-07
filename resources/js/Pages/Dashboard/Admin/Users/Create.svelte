@@ -6,9 +6,9 @@
     import IconInput from '@/Components/UI/Form/IconInput.svelte';
     import RadioOption from '@/Components/UI/Form/RadioOption.svelte';
     
-    let processing = false;
-    let passwordMatchError = '';
-    let showPasswordError = false;
+    let processing = $state(false);
+    let passwordMatchError = $state('');
+    let showPasswordError = $state(false);
     
     const form = useForm({
         name: '',
@@ -54,7 +54,7 @@
             { label: 'Create' }
         ]}
     >
-        <div slot="actions">
+        {#snippet actions()}
             <Button
                 href={route('admin.users.index')}
                 variant="secondary"
@@ -63,12 +63,12 @@
             >
                 Back
             </Button>
-        </div>
+        {/snippet}
     </PageHeader>
     
     <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
         <div class="p-5">
-            <form on:submit|preventDefault={handleSubmit} class="space-y-4 w-full p-0 lg:p-2">
+            <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-4 w-full p-0 lg:p-2">
                 <div class="mb-4">
                     <h3 class="text-lg font-medium text-gray-800">User Information</h3>
                     <p class="text-sm text-gray-500 mt-1 mb-2">Fill in the new user details below</p>

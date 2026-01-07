@@ -1,14 +1,14 @@
 <script>
-    import { onMount } from 'svelte';
     import { Link } from '@inertiajs/svelte';
     import Logo from '@/Components/Shared/Logo.svelte';
     
-    export let title = '';
-    export let subtitle = '';
+    // Svelte 5: Using $props()
+    let { title = '', subtitle = '', children } = $props();
     
-    let mounted = false;
+    let mounted = $state(false);
     
-    onMount(() => {
+    // Svelte 5: Using $effect for side effects
+    $effect(() => {
         mounted = true;
     });
 </script>
@@ -30,7 +30,9 @@
                 showTagline={true}
                 theme="light"
             >
-                <span slot="tagline">Laravel 12 Inertia Svelte</span>
+                {#snippet tagline()}
+                    Laravel 12 Inertia Svelte
+                {/snippet}
             </Logo>
         </div>
         
@@ -53,7 +55,7 @@
             {/if}
             
             <!-- Content Slot -->
-            <slot />
+            {@render children?.()}
         </div>
         
         <!-- Footer -->

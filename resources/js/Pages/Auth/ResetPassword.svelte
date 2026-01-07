@@ -6,8 +6,7 @@
     import PasswordInput from '@/Components/UI/Form/PasswordInput.svelte';
     import FormError from '@/Components/UI/Form/FormError.svelte';
     
-    export let token = '';
-    export let email = '';
+    let { token = '', email = '' } = $props();
     
     const form = useForm({
         token: token,
@@ -29,7 +28,7 @@
     <FormError errors={$form.errors} title="Please fix the following errors" />
     
     <!-- Form -->
-    <form on:submit|preventDefault={submit} class="space-y-5">
+    <form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-5">
         <!-- Email Field (readonly) -->
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
