@@ -19,8 +19,6 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 - [Project Structure](#-project-structure)
 - [Components](#-components)
 - [Customization](#-customization)
-- [Deployment](#-deployment)
-- [Troubleshooting](#-troubleshooting)
 
 ## ✨ Features
 
@@ -58,26 +56,11 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 
 Pastikan sistem Anda memenuhi requirements berikut:
 
-- **PHP** >= 8.3
+- **PHP** >= 8.2
 - **Composer** >= 2.7
 - **Node.js** >= 20.0
 - **NPM** >= 10.0 atau Yarn
 - **MySQL** >= 8.0 atau PostgreSQL >= 15
-- **Git**
-
-### PHP Extensions Required:
-- BCMath PHP Extension
-- Ctype PHP Extension
-- cURL PHP Extension
-- DOM PHP Extension
-- Fileinfo PHP Extension
-- JSON PHP Extension
-- Mbstring PHP Extension
-- OpenSSL PHP Extension
-- PCRE PHP Extension
-- PDO PHP Extension
-- Tokenizer PHP Extension
-- XML PHP Extension
 
 ## 🔧 Installation
 
@@ -353,90 +336,6 @@ Semua komponen dapat di-customize dengan props atau override styles:
   Custom Button
 </Button>
 ```
-
-## 🚀 Deployment
-
-### Production Build
-
-```bash
-# Install dependencies (production)
-composer install --optimize-autoloader --no-dev
-
-# Build assets
-npm run build
-
-# Cache optimization
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-### Environment Production
-
-Update `.env`:
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
-
-# Force HTTPS
-ASSET_URL="${APP_URL}"
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. Blank page atau error 500**
-```bash
-# Check permissions
-chmod -R 755 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-
-# Clear cache
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-```
-
-**2. Vite manifest not found**
-```bash
-# Development
-npm run dev
-
-# Production
-npm run build
-```
-
-**3. Database connection refused**
-- Pastikan MySQL/PostgreSQL running
-- Check credentials di `.env`
-- Test connection: `php artisan db:show`
-
-**4. Email tidak terkirim**
-- Gunakan Mailtrap untuk testing
-- Check SMTP credentials
-- Enable "Less secure app access" untuk Gmail
-
-**5. Storage permission denied**
-```bash
-# Linux/Mac
-sudo chmod -R 775 storage
-sudo chown -R $USER:www-data storage
-
-# Windows (run as Administrator)
-icacls storage /grant Everyone:F /T
-```
-
-### Debug Mode
-
-Untuk debugging, aktifkan di `.env`:
-```env
-APP_DEBUG=true
-```
-
-**⚠️ WARNING**: Jangan aktifkan debug mode di production!
 
 ## 📚 Resources
 
