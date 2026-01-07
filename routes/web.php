@@ -79,7 +79,8 @@ Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('ad
     Route::resource('roles', RoleController::class);
     
     // Permission Management (super-admin only)
-    Route::resource('permissions', PermissionController::class);
+    Route::resource('permissions', PermissionController::class)->except(['edit', 'update', 'show']);
+    Route::post('/permissions/toggle', [PermissionController::class, 'toggle'])->name('permissions.toggle');
     
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
