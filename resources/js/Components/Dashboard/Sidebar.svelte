@@ -8,7 +8,8 @@
     let innerWidth = $state(0);
     
     // Svelte 5: Using $derived for computed values
-    let userRole = $derived($page.props.auth?.user?.role || 'member');
+    let userRoles = $derived($page.props.auth?.user?.roles || []);
+    let isAdminRole = $derived(userRoles.includes('admin') || userRoles.includes('super-admin'));
     let currentPath = $derived($page.url ? $page.url.split('?')[0] : '');
     let isMobile = $derived(innerWidth < 768);
     let effectiveCollapsed = $derived(!isMobile && sidebarCollapsed);
@@ -20,6 +21,8 @@
             items: [
                 { id: 'dashboard', name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-home' },
                 { id: 'users', name: 'Users', href: '/admin/users', icon: 'fas fa-users' },
+                { id: 'roles', name: 'Roles', href: '/admin/roles', icon: 'fas fa-user-tag' },
+                { id: 'permissions', name: 'Permissions', href: '/admin/permissions', icon: 'fas fa-key' },
             ]
         },
         {
@@ -52,7 +55,7 @@
         }
     ];
     
-    let menuCategories = $derived(userRole === 'admin' ? adminMenuCategories : memberMenuCategories);
+    let menuCategories = $derived(isAdminRole ? adminMenuCategories : memberMenuCategories);
     
     // Svelte 5: Using $effect for side effects
     $effect(() => {
@@ -114,12 +117,12 @@
         <!-- Header -->
         <div class="{effectiveCollapsed ? 'px-2 py-4' : 'px-4 py-2.5'} border-b border-gray-200 flex items-center {effectiveCollapsed ? 'justify-center' : 'justify-between'}">
             <Logo 
-                href={userRole === 'admin' ? '/admin/dashboard' : '/dashboard'} 
+                href={isAdminRole ? '/admin/dashboard' : '/dashboard'} 
                 size={effectiveCollapsed ? 'small' : 'default'} 
                 showTagline={!effectiveCollapsed}
                 showText={!effectiveCollapsed}
             >
-                <span slot="tagline">{userRole === 'admin' ? 'Admin Panel' : 'Member Area'}</span>
+                <span slot="tagline">{isAdminRole ? 'Admin Panel' : 'Member Area'}</span>
             </Logo>
             
             <!-- Mobile close button -->

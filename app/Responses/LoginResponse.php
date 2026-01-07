@@ -14,9 +14,12 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        $home = match (auth()->user()->role) {
-            'admin' => '/admin/dashboard',
-            'member' => '/dashboard',
+        $user = auth()->user();
+        
+        // Check roles using Spatie Permission
+        $home = match (true) {
+            $user->hasAnyRole(['super-admin', 'admin']) => '/admin/dashboard',
+            $user->hasRole('member') => '/dashboard',
             default => '/'
         };
 

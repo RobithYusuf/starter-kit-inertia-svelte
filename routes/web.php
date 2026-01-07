@@ -5,6 +5,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ComponentsController;
 use App\Http\Controllers\ProfileController;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -72,6 +74,12 @@ Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('ad
     
     // User Management
     Route::resource('users', UserController::class);
+    
+    // Role Management (super-admin only for create/delete)
+    Route::resource('roles', RoleController::class);
+    
+    // Permission Management (super-admin only)
+    Route::resource('permissions', PermissionController::class);
     
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
