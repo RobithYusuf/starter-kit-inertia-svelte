@@ -1,6 +1,6 @@
 # 🚀 Laravel Inertia Svelte Starter Kit
 
-Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js v2**, dan **Svelte 5** (Runes). Dilengkapi dengan authentication, Spatie Permission, user management, dan component library.
+Modern starter kit for building web applications with **Laravel 12**, **Inertia.js v2**, and **Svelte 5** (Runes). Includes authentication, Spatie Permission, user management, and component library.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
@@ -26,48 +26,48 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 ### 🔐 Authentication & Authorization
 - Login, Register, Forgot Password, Reset Password
 - Email verification (optional)
-- **Spatie Laravel Permission** untuk roles & permissions
+- **Spatie Laravel Permission** for roles & permissions
 - 3 default roles: Super Admin, Admin, Member
 - 17 granular permissions
-- Permission Matrix UI untuk manage permissions
-- Protected routes dengan middleware
+- Permission Matrix UI for managing permissions
+- Protected routes with middleware
 
 ### 👥 User Management
-- CRUD users dengan DataTable
-- Assign roles ke users
-- Search, sort, dan pagination
-- User avatar dengan initial generator
+- CRUD users with DataTable
+- Assign roles to users
+- Search, sort, and pagination
+- User avatar with initial generator
 
 ### 🔒 Session Management
-- View semua active sessions
-- Revoke sessions dari device lain
-- Informasi device, IP, dan last activity
+- View all active sessions
+- Revoke sessions from other devices
+- Device, IP, and last activity information
 
 ### 🎨 UI/UX Features
 - **5 Theme Colors**: Orange (default), Blue, Emerald, Purple, Slate
-- **Customizable Alert Position**: 6 posisi (top/bottom, left/center/right)
+- **Customizable Alert Position**: 6 positions (top/bottom, left/center/right)
 - **Responsive Design**: Mobile-first approach
 - **Toast Notifications**: Success, error, info, warning alerts
 - **Loading States**: Skeleton loader & spinner
 - **Empty States**: Informative placeholder
 
 ### 🛠️ Developer Experience
-- **Svelte 5 Runes**: Full migration ke $state, $derived, $effect, $props
+- **Svelte 5 Runes**: Full migration to $state, $derived, $effect, $props
 - **Hot Module Replacement**: Instant preview
 - **Component Library**: 40+ reusable components
-- **Form Handling**: Terintegrasi dengan Inertia
+- **Form Handling**: Integrated with Inertia
 - **Validation**: Client & server-side
-- **Multi-language Support**: Bahasa Indonesia & English
+- **Multi-language Support**: Indonesian & English
 
 ## 📦 Requirements
 
-Pastikan sistem Anda memenuhi requirements berikut:
+Make sure your system meets the following requirements:
 
 - **PHP** >= 8.2
 - **Composer** >= 2.7
 - **Node.js** >= 20.0
-- **NPM** >= 10.0 atau Yarn
-- **MySQL** >= 8.0 atau PostgreSQL >= 15
+- **NPM** >= 10.0 or Yarn
+- **MySQL** >= 8.0 or PostgreSQL >= 15
 
 ## 🔧 Installation
 
@@ -77,7 +77,7 @@ Pastikan sistem Anda memenuhi requirements berikut:
 # Clone repository
 git clone https://github.com/RobithYusuf/starter-kit-inertia-svelte.git my-app
 
-# Masuk ke directory
+# Enter directory
 cd my-app
 ```
 
@@ -89,14 +89,14 @@ composer install
 
 # Install Node dependencies
 npm install
-# atau menggunakan yarn
+# or using yarn
 yarn install
 ```
 
 ### 3. Environment Setup
 
 ```bash
-# Copy file environment
+# Copy environment file
 cp .env.example .env
 
 # Generate application key
@@ -105,7 +105,7 @@ php artisan key:generate
 
 ### 4. Configure Database
 
-Edit file `.env` dan sesuaikan konfigurasi database:
+Edit `.env` file and configure your database:
 
 ```env
 DB_CONNECTION=mysql
@@ -119,23 +119,23 @@ DB_PASSWORD=your_password
 ### 5. Run Migrations & Seeders
 
 ```bash
-# Buat database tables
+# Create database tables
 php artisan migrate
 
-# Isi data dummy (optional)
+# Seed dummy data (optional)
 php artisan db:seed
 ```
 
-Seeder akan membuat:
+Seeder will create:
 - Super Admin: `superadmin@example.com` / `password`
 - Admin: `admin@example.com` / `password`
 - Member: `member@example.com` / `password`
-- 50 dummy users dengan role member
+- 50 dummy users with member role
 
 ### 6. Build Assets
 
 ```bash
-# Development mode dengan HMR
+# Development mode with HMR
 npm run dev
 
 # Production build
@@ -148,17 +148,17 @@ npm run build
 # Terminal 1: Laravel server
 php artisan serve
 
-# Terminal 2: Vite dev server (jika belum running)
+# Terminal 2: Vite dev server (if not already running)
 npm run dev
 ```
 
-Aplikasi dapat diakses di: `http://localhost:8000`
+Application accessible at: `http://localhost:8000`
 
 ## ⚙️ Configuration
 
 ### Email Configuration
 
-Untuk fitur email (reset password, verification), konfigurasikan di `.env`:
+For email features (reset password, verification), configure in `.env`:
 
 ```env
 MAIL_MAILER=smtp
@@ -173,7 +173,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 ### Storage Link
 
-Untuk upload file/images:
+For file/image uploads:
 
 ```bash
 php artisan storage:link
@@ -181,7 +181,7 @@ php artisan storage:link
 
 ### Queue Configuration (Optional)
 
-Untuk background jobs:
+For background jobs:
 
 ```env
 QUEUE_CONNECTION=database
@@ -197,7 +197,7 @@ php artisan queue:work
 
 ### Default Users
 
-Setelah menjalankan seeder, gunakan akun berikut:
+After running seeder, use the following accounts:
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -207,11 +207,11 @@ Setelah menjalankan seeder, gunakan akun berikut:
 
 ### Roles & Permissions
 
-Project ini menggunakan [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission):
+This project uses [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission):
 
 | Role | Permissions | Dashboard |
 |------|-------------|-----------|
-| `super-admin` | Semua permissions | `/admin/dashboard` |
+| `super-admin` | All permissions | `/admin/dashboard` |
 | `admin` | User CRUD, Settings, Components | `/admin/dashboard` |
 | `member` | Profile, Sessions | `/dashboard` |
 
@@ -224,7 +224,7 @@ Project ini menggunakan [Spatie Laravel Permission](https://spatie.be/docs/larav
 - `sessions.view`, `sessions.revoke`
 - `components.view`
 
-### Struktur Route
+### Route Structure
 
 ```php
 // Public routes
@@ -283,19 +283,19 @@ Route::middleware(['auth', 'role:member'])->group(function () {
 
 ## 🧩 Components
 
-Starter kit menyediakan 40+ komponen siap pakai dengan Svelte 5 Runes:
+Starter kit provides 40+ ready-to-use components with Svelte 5 Runes:
 
 ### UI Components
 | Component | Description |
 |-----------|-------------|
-| `Button` | Tombol dengan varian (primary, secondary, outline, ghost, danger) |
-| `Card` | Container dengan shadow dan padding |
-| `Modal` | Dialog/popup dengan portal rendering |
-| `ConfirmModal` | Modal konfirmasi dengan callback |
-| `Alert` | Notifikasi inline |
-| `AlertContainer` | Toast notifications dengan 6 posisi |
-| `Badge` | Label/tag dengan warna |
-| `Avatar` | User avatar dengan fallback initials |
+| `Button` | Button with variants (primary, secondary, outline, ghost, danger) |
+| `Card` | Container with shadow and padding |
+| `Modal` | Dialog/popup with portal rendering |
+| `ConfirmModal` | Confirmation modal with callback |
+| `Alert` | Inline notification |
+| `AlertContainer` | Toast notifications with 6 positions |
+| `Badge` | Label/tag with colors |
+| `Avatar` | User avatar with fallback initials |
 | `Tabs` | Tab navigation |
 | `Accordion` | Collapsible content |
 | `Tooltip` | Hover tooltips |
@@ -309,30 +309,30 @@ Starter kit menyediakan 40+ komponen siap pakai dengan Svelte 5 Runes:
 ### Form Components
 | Component | Description |
 |-----------|-------------|
-| `TextInput` | Text input dengan label dan error |
+| `TextInput` | Text input with label and error |
 | `Select` | Custom select dropdown |
-| `MultiSelect` | Multi-value select dengan tags |
-| `DatePicker` | Calendar date picker dengan min/max |
-| `DateRangePicker` | Date range dengan presets |
+| `MultiSelect` | Multi-value select with tags |
+| `DatePicker` | Calendar date picker with min/max |
+| `DateRangePicker` | Date range with presets |
 | `FileUpload` | Drag & drop file upload |
 | `TagInput` | Tag/chip input |
 | `RangeSlider` | Numeric range slider |
 | `Toggle` | Toggle switch |
 | `Checkbox` | Custom checkbox |
-| `PasswordInput` | Password dengan visibility toggle |
+| `PasswordInput` | Password with visibility toggle |
 
-Lihat semua komponen di `/admin/components` setelah login.
+View all components at `/admin/components` after login.
 
 ## 🎨 Customization
 
-### Mengganti Theme
+### Changing Theme
 
-1. Melalui UI:
-   - Login sebagai admin
-   - Pergi ke Settings
-   - Pilih theme yang diinginkan
+1. Via UI:
+   - Login as admin
+   - Go to Settings
+   - Select desired theme
 
-2. Menambah theme baru:
+2. Adding new theme:
 ```javascript
 // resources/js/Stores/themeStore.svelte.js
 export const presetThemes = {
@@ -341,32 +341,32 @@ export const presetThemes = {
         colors: {
             primary50: '#eef2ff',
             primary100: '#e0e7ff',
-            // ... warna lainnya
+            // ... other colors
         }
     }
 };
 ```
 
-### Menambah Role & Permission
+### Adding Role & Permission
 
 ```php
 // database/seeders/RolePermissionSeeder.php
 
-// Tambah permission baru
+// Add new permissions
 $permissions = [
     // ... existing
     'report.view',
     'report.export',
 ];
 
-// Buat role baru
+// Create new role
 $editor = Role::create(['name' => 'editor']);
 $editor->givePermissionTo(['report.view', 'report.export']);
 
-// Jalankan: php artisan db:seed --class=RolePermissionSeeder
+// Run: php artisan db:seed --class=RolePermissionSeeder
 ```
 
-### Using Permissions di Svelte
+### Using Permissions in Svelte
 
 ```svelte
 <script>
