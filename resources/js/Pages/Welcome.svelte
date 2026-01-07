@@ -4,6 +4,9 @@
     import Button from '@/Components/UI/Button.svelte';
     
     const isAuthenticated = $derived($page.props.auth?.user !== null);
+    const userRoles = $derived($page.props.auth?.user?.roles || []);
+    const isAdminRole = $derived(userRoles.includes('admin') || userRoles.includes('super-admin'));
+    const dashboardUrl = $derived(isAdminRole ? '/admin/dashboard' : '/dashboard');
 
     const features = [
         {
@@ -81,7 +84,7 @@
                 <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                     {#if isAuthenticated}
                         <Button 
-                            href={$page.props.auth.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
+                            href={dashboardUrl}
                             variant="primary" 
                             size="lg" 
                             icon="fas fa-arrow-right"
@@ -243,7 +246,7 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 {#if isAuthenticated}
                     <Button 
-                        href={$page.props.auth.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
+                        href={dashboardUrl}
                         variant="secondary" 
                         size="lg" 
                         icon="fas fa-arrow-right"

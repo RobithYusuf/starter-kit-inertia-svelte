@@ -6,6 +6,9 @@
     let { showNav = true, showFooter = true, children } = $props();
     
     const isAuthenticated = $derived($page.props.auth?.user !== null && $page.props.auth?.user !== undefined);
+    const userRoles = $derived($page.props.auth?.user?.roles || []);
+    const isAdminRole = $derived(userRoles.includes('admin') || userRoles.includes('super-admin'));
+    const dashboardUrl = $derived(isAdminRole ? '/admin/dashboard' : '/dashboard');
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex flex-col">
@@ -23,7 +26,7 @@
                 <div class="flex items-center gap-2 sm:gap-4">
                     {#if isAuthenticated}
                         <Button 
-                            href={$page.props.auth?.user?.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
+                            href={dashboardUrl}
                             variant="primary"
                             size="sm"
                             icon="fas fa-tachometer-alt"

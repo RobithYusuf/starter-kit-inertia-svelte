@@ -15,7 +15,8 @@
     let processedFlash = $state(new Set());
     
     // Svelte 5: Using $derived for computed values
-    let userRole = $derived($page.props.auth?.user?.role || 'member');
+    let userRoles = $derived($page.props.auth?.user?.roles || []);
+    let isAdminRole = $derived(userRoles.includes('admin') || userRoles.includes('super-admin'));
     
     function toggleSidebar() {
         sidebarOpen = !sidebarOpen;
@@ -182,7 +183,7 @@
                                     <!-- Menu Items -->
                                     <div class="py-1">
                                         <Link
-                                            href={userRole === 'admin' ? '/admin/profile' : '/profile'}
+                                            href={isAdminRole ? '/admin/profile' : '/profile'}
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                             onclick={closeUserMenu}
                                         >
@@ -191,7 +192,7 @@
                                         </Link>
                                         
                                         <Link
-                                            href={userRole === 'admin' ? '/admin/settings' : '/settings'}
+                                            href={isAdminRole ? '/admin/settings' : '/settings'}
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                             onclick={closeUserMenu}
                                         >
