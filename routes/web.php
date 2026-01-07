@@ -75,13 +75,6 @@ Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('ad
     // User Management
     Route::resource('users', UserController::class);
     
-    // Role Management (super-admin only for create/delete)
-    Route::resource('roles', RoleController::class);
-    
-    // Permission Management (super-admin only)
-    Route::resource('permissions', PermissionController::class)->except(['edit', 'update', 'show']);
-    Route::post('/permissions/toggle', [PermissionController::class, 'toggle'])->name('permissions.toggle');
-    
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -97,6 +90,16 @@ Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->name('ad
     
     // Components Library
     Route::get('/components', [ComponentsController::class, 'index'])->name('components');
+});
+
+// Super Admin Only Routes
+Route::middleware(['auth', 'role:super-admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Role Management (super-admin only)
+    Route::resource('roles', RoleController::class);
+    
+    // Permission Management (super-admin only)
+    Route::resource('permissions', PermissionController::class)->except(['edit', 'update', 'show']);
+    Route::post('/permissions/toggle', [PermissionController::class, 'toggle'])->name('permissions.toggle');
 });
 
 // Member Routes

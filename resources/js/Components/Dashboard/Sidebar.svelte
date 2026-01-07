@@ -10,19 +10,24 @@
     // Svelte 5: Using $derived for computed values
     let userRoles = $derived($page.props.auth?.user?.roles || []);
     let isAdminRole = $derived(userRoles.includes('admin') || userRoles.includes('super-admin'));
+    let isSuperAdmin = $derived(userRoles.includes('super-admin'));
     let currentPath = $derived($page.url ? $page.url.split('?')[0] : '');
     let isMobile = $derived(innerWidth < 768);
     let effectiveCollapsed = $derived(!isMobile && sidebarCollapsed);
     
-    const adminMenuCategories = [
+    // Build admin menu dynamically based on role
+    let adminMenuCategories = $derived([
         {
             id: 'main',
             name: 'Main',
             items: [
                 { id: 'dashboard', name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-home' },
                 { id: 'users', name: 'Users', href: '/admin/users', icon: 'fas fa-users' },
-                { id: 'roles', name: 'Roles', href: '/admin/roles', icon: 'fas fa-user-tag' },
-                { id: 'permissions', name: 'Permissions', href: '/admin/permissions', icon: 'fas fa-key' },
+                // Only show Roles & Permissions for super-admin
+                ...(isSuperAdmin ? [
+                    { id: 'roles', name: 'Roles', href: '/admin/roles', icon: 'fas fa-user-tag' },
+                    { id: 'permissions', name: 'Permissions', href: '/admin/permissions', icon: 'fas fa-key' },
+                ] : []),
             ]
         },
         {
@@ -41,7 +46,7 @@
                 { id: 'components', name: 'Components', href: '/admin/components', icon: 'fas fa-puzzle-piece' },
             ]
         }
-    ];
+    ]);
     
     const memberMenuCategories = [
         {

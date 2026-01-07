@@ -28,6 +28,18 @@
         expandedGroups = new Set(expandedGroups);
     }
     
+    function expandAll() {
+        expandedGroups = new Set(permissionGroups.map(g => g.name));
+    }
+    
+    function collapseAll() {
+        expandedGroups = new Set();
+    }
+    
+    // Check if all groups are expanded
+    let allExpanded = $derived(expandedGroups.size === permissionGroups.length);
+    let allCollapsed = $derived(expandedGroups.size === 0);
+    
     async function togglePermission(permissionId, roleId, roleName, currentValue) {
         if (roleName === 'super-admin') return;
         
@@ -176,25 +188,51 @@
     
     <!-- Legend -->
     <Card margin="mb-4">
-        <div class="flex flex-wrap items-center gap-4 text-sm">
-            <span class="font-medium text-gray-700">Legend:</span>
-            <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded bg-primary-600 flex items-center justify-center">
-                    <i class="fas fa-check text-white text-xs"></i>
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-4 text-sm">
+                <span class="font-medium text-gray-700">Legend:</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded bg-primary-600 flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                    </div>
+                    <span class="text-gray-600">Granted</span>
                 </div>
-                <span class="text-gray-600">Granted</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-times text-gray-400 text-xs"></i>
+                    </div>
+                    <span class="text-gray-600">Not Granted</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded bg-yellow-100 border border-yellow-300 flex items-center justify-center">
+                        <i class="fas fa-lock text-yellow-600 text-xs"></i>
+                    </div>
+                    <span class="text-gray-600">Super Admin (Always All)</span>
+                </div>
             </div>
+            
+            <!-- Expand/Collapse Buttons -->
             <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded bg-gray-200 flex items-center justify-center">
-                    <i class="fas fa-times text-gray-400 text-xs"></i>
-                </div>
-                <span class="text-gray-600">Not Granted</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded bg-yellow-100 border border-yellow-300 flex items-center justify-center">
-                    <i class="fas fa-lock text-yellow-600 text-xs"></i>
-                </div>
-                <span class="text-gray-600">Super Admin (Always All)</span>
+                <button
+                    onclick={expandAll}
+                    disabled={allExpanded}
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors {allExpanded 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+                >
+                    <i class="fas fa-expand-alt text-xs"></i>
+                    Expand All
+                </button>
+                <button
+                    onclick={collapseAll}
+                    disabled={allCollapsed}
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors {allCollapsed 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+                >
+                    <i class="fas fa-compress-alt text-xs"></i>
+                    Collapse All
+                </button>
             </div>
         </div>
     </Card>
