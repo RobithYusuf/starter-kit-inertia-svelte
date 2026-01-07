@@ -1,12 +1,13 @@
 # 🚀 Laravel Inertia Svelte Starter Kit
 
-Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js**, dan **Svelte 5**. Dilengkapi dengan authentication, dashboard, user management, dan theme system.
+Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia.js v2**, dan **Svelte 5** (Runes). Dilengkapi dengan authentication, Spatie Permission, user management, dan component library.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
   <img src="https://img.shields.io/badge/Svelte-5.x-FF3E00?style=for-the-badge&logo=svelte&logoColor=white" alt="Svelte">
-  <img src="https://img.shields.io/badge/Inertia.js-1.x-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
+  <img src="https://img.shields.io/badge/Inertia.js-2.x-6B46C1?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia">
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
+  <img src="https://img.shields.io/badge/Spatie_Permission-6.x-2196F3?style=for-the-badge" alt="Spatie Permission">
 </p>
 
 ## 📋 Table of Contents
@@ -24,32 +25,38 @@ Starter kit modern untuk membangun aplikasi web dengan **Laravel 12**, **Inertia
 
 ### 🔐 Authentication & Authorization
 - Login, Register, Forgot Password, Reset Password
-- Email verification ready
-- Role-based access control (Admin & Member)
+- Email verification (optional)
+- **Spatie Laravel Permission** untuk roles & permissions
+- 3 default roles: Super Admin, Admin, Member
+- 17 granular permissions
+- Permission Matrix UI untuk manage permissions
 - Protected routes dengan middleware
-- Pesan error yang informatif (email tidak ditemukan, password salah, akun dinonaktifkan)
 
 ### 👥 User Management
 - CRUD users dengan DataTable
+- Assign roles ke users
 - Search, sort, dan pagination
-- Bulk actions support
 - User avatar dengan initial generator
+
+### 🔒 Session Management
+- View semua active sessions
+- Revoke sessions dari device lain
+- Informasi device, IP, dan last activity
 
 ### 🎨 UI/UX Features
 - **5 Theme Colors**: Orange (default), Blue, Emerald, Purple, Slate
+- **Customizable Alert Position**: 6 posisi (top/bottom, left/center/right)
 - **Responsive Design**: Mobile-first approach
-- **Dark Mode Ready**: Struktur sudah disiapkan
-- **Toast Notifications**: Success, error, info alerts
+- **Toast Notifications**: Success, error, info, warning alerts
 - **Loading States**: Skeleton loader & spinner
 - **Empty States**: Informative placeholder
 
 ### 🛠️ Developer Experience
+- **Svelte 5 Runes**: Full migration ke $state, $derived, $effect, $props
 - **Hot Module Replacement**: Instant preview
-- **TypeScript Ready**: Dapat ditambahkan
-- **Component Library**: 30+ reusable components
+- **Component Library**: 40+ reusable components
 - **Form Handling**: Terintegrasi dengan Inertia
-- **Validation**: Client & server-side dengan pesan bahasa Indonesia
-- **SEO Friendly**: Meta tags management
+- **Validation**: Client & server-side
 - **Multi-language Support**: Bahasa Indonesia & English
 
 ## 📦 Requirements
@@ -120,9 +127,10 @@ php artisan db:seed
 ```
 
 Seeder akan membuat:
-- Admin user: `admin@example.com` / `password`
-- Member user: `member@example.com` / `password`
-- 50 dummy users untuk testing
+- Super Admin: `superadmin@example.com` / `password`
+- Admin: `admin@example.com` / `password`
+- Member: `member@example.com` / `password`
+- 50 dummy users dengan role member
 
 ### 6. Build Assets
 
@@ -193,28 +201,52 @@ Setelah menjalankan seeder, gunakan akun berikut:
 
 | Role | Email | Password |
 |------|-------|----------|
+| Super Admin | superadmin@example.com | password |
 | Admin | admin@example.com | password |
 | Member | member@example.com | password |
+
+### Roles & Permissions
+
+Project ini menggunakan [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission):
+
+| Role | Permissions | Dashboard |
+|------|-------------|-----------|
+| `super-admin` | Semua permissions | `/admin/dashboard` |
+| `admin` | User CRUD, Settings, Components | `/admin/dashboard` |
+| `member` | Profile, Sessions | `/dashboard` |
+
+**Available Permissions:**
+- `user.view`, `user.create`, `user.edit`, `user.delete`
+- `role.view`, `role.create`, `role.edit`, `role.delete`
+- `settings.view`, `settings.edit`
+- `dashboard.admin`, `dashboard.member`
+- `profile.view`, `profile.edit`
+- `sessions.view`, `sessions.revoke`
+- `components.view`
 
 ### Struktur Route
 
 ```php
 // Public routes
-Route::get('/', Welcome::class);
-Route::get('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'register']);
+Route::get('/', ...);
+Route::get('/login', ...);
+Route::get('/register', ...);
 
-// Authenticated routes
-Route::middleware(['auth'])->group(function () {
-    // Member area
-    Route::get('/dashboard', MemberDashboard::class);
-    
-    // Admin area
-    Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-        Route::get('/dashboard', AdminDashboard::class);
-        Route::resource('users', UserController::class);
-        Route::get('/settings', Settings::class);
-    });
+// Admin routes (super-admin & admin)
+Route::middleware(['auth', 'role:super-admin,admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
+    Route::get('/settings', ...);
+    Route::get('/components', ...);
+});
+
+// Member routes
+Route::middleware(['auth', 'role:member'])->group(function () {
+    Route::get('/dashboard', ...);
+    Route::get('/profile', ...);
+    Route::get('/sessions', ...);
 });
 ```
 
@@ -251,27 +283,45 @@ Route::middleware(['auth'])->group(function () {
 
 ## 🧩 Components
 
-Starter kit menyediakan 30+ komponen siap pakai:
+Starter kit menyediakan 40+ komponen siap pakai dengan Svelte 5 Runes:
 
 ### UI Components
-- `Button` - Tombol dengan berbagai varian
-- `Card` - Container dengan shadow
-- `Modal` - Dialog/popup
-- `Alert` - Notifikasi toast
-- `EmptyState` - Placeholder kosong
-- `Pagination` - Navigasi halaman
-- Dan lainnya...
+| Component | Description |
+|-----------|-------------|
+| `Button` | Tombol dengan varian (primary, secondary, outline, ghost, danger) |
+| `Card` | Container dengan shadow dan padding |
+| `Modal` | Dialog/popup dengan portal rendering |
+| `ConfirmModal` | Modal konfirmasi dengan callback |
+| `Alert` | Notifikasi inline |
+| `AlertContainer` | Toast notifications dengan 6 posisi |
+| `Badge` | Label/tag dengan warna |
+| `Avatar` | User avatar dengan fallback initials |
+| `Tabs` | Tab navigation |
+| `Accordion` | Collapsible content |
+| `Tooltip` | Hover tooltips |
+| `Progress` | Progress bar |
+| `Spinner` | Loading indicator |
+| `Skeleton` | Loading placeholder |
+| `Pagination` | Page navigation |
+| `Breadcrumb` | Navigation breadcrumbs |
+| `Dropdown` | Dropdown menu |
 
 ### Form Components
-- `Input` - Text input standard
-- `IconInput` - Input dengan icon
-- `EmailInput` - Khusus email
-- `PasswordInput` - Dengan toggle visibility
-- `RadioOption` - Custom radio button
-- `Dropdown` - Select replacement
-- Dan lainnya...
+| Component | Description |
+|-----------|-------------|
+| `TextInput` | Text input dengan label dan error |
+| `Select` | Custom select dropdown |
+| `MultiSelect` | Multi-value select dengan tags |
+| `DatePicker` | Calendar date picker dengan min/max |
+| `DateRangePicker` | Date range dengan presets |
+| `FileUpload` | Drag & drop file upload |
+| `TagInput` | Tag/chip input |
+| `RangeSlider` | Numeric range slider |
+| `Toggle` | Toggle switch |
+| `Checkbox` | Custom checkbox |
+| `PasswordInput` | Password dengan visibility toggle |
 
-Dokumentasi lengkap: [Components README](resources/js/Components/README.md)
+Lihat semua komponen di `/admin/components` setelah login.
 
 ## 🎨 Customization
 
@@ -284,9 +334,8 @@ Dokumentasi lengkap: [Components README](resources/js/Components/README.md)
 
 2. Menambah theme baru:
 ```javascript
-// resources/js/Stores/themeStore.js
+// resources/js/Stores/themeStore.svelte.js
 export const presetThemes = {
-    // Theme baru
     indigo: {
         name: 'Indigo Night',
         colors: {
@@ -298,43 +347,39 @@ export const presetThemes = {
 };
 ```
 
-### Menambah Role Baru
+### Menambah Role & Permission
 
-1. Update User model:
 ```php
-// app/Models/User.php
-public function hasRole($role)
-{
-    return $this->role === $role;
-}
-```
+// database/seeders/RolePermissionSeeder.php
 
-2. Buat middleware baru:
-```php
-php artisan make:middleware EditorMiddleware
-```
-
-3. Register di Kernel:
-```php
-// app/Http/Kernel.php
-protected $routeMiddleware = [
-    'editor' => \App\Http\Middleware\EditorMiddleware::class,
+// Tambah permission baru
+$permissions = [
+    // ... existing
+    'report.view',
+    'report.export',
 ];
+
+// Buat role baru
+$editor = Role::create(['name' => 'editor']);
+$editor->givePermissionTo(['report.view', 'report.export']);
+
+// Jalankan: php artisan db:seed --class=RolePermissionSeeder
 ```
 
-### Customize Components
-
-Semua komponen dapat di-customize dengan props atau override styles:
+### Using Permissions di Svelte
 
 ```svelte
-<!-- Custom button -->
-<Button 
-  variant="primary"
-  size="lg"
-  class="!bg-pink-500 !hover:bg-pink-600"
->
-  Custom Button
-</Button>
+<script>
+    import { page } from '@inertiajs/svelte';
+    
+    let user = $derived($page.props.auth?.user);
+    let canCreateUser = $derived(user?.permissions?.includes('user.create'));
+    let isAdmin = $derived(user?.roles?.some(r => ['admin', 'super-admin'].includes(r)));
+</script>
+
+{#if canCreateUser}
+    <Button>Create User</Button>
+{/if}
 ```
 
 ## 📚 Resources
@@ -360,7 +405,7 @@ This project is open-sourced software licensed under the [MIT license](https://o
 
 ## 👨‍💻 Author
 
-Created with ❤️ by [Your Name](https://github.com/RobithYusuf)
+Created with ❤️ by [RobithYusuf](https://github.com/RobithYusuf)
 
 ---
 
