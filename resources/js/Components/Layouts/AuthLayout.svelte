@@ -37,7 +37,7 @@
         </div>
         
         <!-- Card Container -->
-        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 sm:p-10 border border-gray-100 auth-page-content">
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-5 sm:p-6 border border-gray-100 auth-page-content">
             <!-- Header -->
             {#if title || subtitle}
             <div class="text-center mb-6">

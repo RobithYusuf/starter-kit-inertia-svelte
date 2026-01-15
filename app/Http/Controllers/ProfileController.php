@@ -17,13 +17,14 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         
-        // Determine the view based on user role
-        $view = $user->role === 'admin' 
+        // Determine the view based on user role (using Spatie Roles)
+        $view = $user->hasAnyRole(['admin', 'super-admin'])
             ? 'Dashboard/Admin/Profile/Edit' 
             : 'Dashboard/Member/Profile/Edit';
         
         return Inertia::render($view, [
-            'user' => $user
+            'user' => $user->load('roles'),
+            'userRole' => $user->roles->first()?->name ?? 'member'
         ]);
     }
     

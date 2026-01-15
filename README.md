@@ -75,7 +75,7 @@ Make sure your system meets the following requirements:
 
 ```bash
 # Clone repository
-git clone https://github.com/RobithYusuf/starter-kit-inertia-svelte.git my-app
+git clone https://github.com/RobithYusuf/starterkit-inertia-svelte.git my-app
 
 # Enter directory
 cd my-app
